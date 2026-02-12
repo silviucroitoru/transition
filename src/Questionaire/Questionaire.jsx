@@ -5,6 +5,7 @@ import mixpanel from "mixpanel-browser";
 import Page from "./components/Page.jsx";
 import './Questionaire.css'
 import HeaderArea from "./components/HeaderArea.jsx";
+import { fetchQuestionnaireByLanguage, saveSubmission } from '../data/questionnaireApi';
 export default function Questionaire() {
   function getLanguageFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -14,6 +15,7 @@ export default function Questionaire() {
   const [language] = useState(getLanguageFromURL() ?? 'RO');
   const [userName, setUserName] = useState(localStorage.getItem('userName'));
   const [submissionId, setSubmissionId] = useState();
+  const [responses, setResponses] = useState({});
   const [progressPages, setProgressPages] = useState([1]);
   const [currentPage, setCurrentPage] = useState(null);
   const topicPageRef = useRef(null);
@@ -36,26 +38,23 @@ export default function Questionaire() {
     if (topicPageRef.current) {
       originalHeight.current = topicPageRef.current.clientHeight;
     }
-    const myHeaders = new Headers();
-    myHeaders.append("X-Api-Key", `${import.meta.env.VITE_API_KEY}`);
-    myHeaders.append("Content-Type", "application/json");
+    async function loadQuestionnaire() {
+      try {
+        // Prefer Supabase; fall back to bundled mockData if it fails.
+        const content = await fetchQuestionnaireByLanguage(language);
+        setQuestionnaire(content);
+        setCurrentPage(content.info[0]);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Falling back to local mockData.questionnaire due to error:', error);
+        setSubmissionId(mockData.SubmissionID);
+        setQuestionnaire(mockData.questionnaire);
+        setCurrentPage(mockData.questionnaire.info[0]);
+        localStorage.setItem('SubmissionID', mockData.SubmissionID);
+      }
+    }
 
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-    // setSubmissionId(mockData.SubmissionID)
-    // setQuestionnaire(mockData.questionnaire);
-    // setCurrentPage(mockData.questionnaire.info[0])
-    fetch(`${import.meta.env.VITE_API_URL}/default/getMenoScoreQuestionnaire?language=${language}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        setSubmissionId(result.SubmissionID)
-        setQuestionnaire(result.questionnaire);
-        setCurrentPage(result.questionnaire.info[0])
-        localStorage.setItem('SubmissionID', result.SubmissionID);
-      })
-      .catch((error) => console.error(error));
+    loadQuestionnaire();
     // eslint-disable-next-line
   }, []);
   const next = async (pageNo, dataPointId, dataPointName, a, type) => {
@@ -66,41 +65,37 @@ export default function Questionaire() {
     if (type === "email") {
       localStorage.setItem('bloomEmail', a)
     }
+    if (type !== "intro" && type !== "media" && type !== "email") {
+      setResponses(prev => ({
+        ...prev,
+        [dataPointName]: a,
+      }));
+    }
     if(type !== "email"){
       setProgressPages([...progressPages, pageNo])
       setCurrentPage(questionnaire.info?.find((page) => page.position === pageNo));
     }
     mixpanel.track(`[Page ${pageNo} View] Questionnaire`, {source: 'Questionnaire'})
-    if(type !== "intro" && type !== "media") {
-      const data = {
-        "SubmissionID": submissionId,
-        "language": language,
-        "DataPointName": dataPointName,
-        "Response": a
-      }
+    if (type === "email") {
+      const updatedResponses = {
+        ...responses,
+        [dataPointName]: a,
+      };
+
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_URL}/default/updateMenoScoreResponse`, {
-          method: 'POST', // Specify the method as POST
-          headers: {
-            "X-Api-Key": "UoLl0hqxiJ5HN15Xd6HMqat9WDMK8fi57JtNIGBF",
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
+        const newSubmissionId = await saveSubmission({
+          language,
+          responses: updatedResponses,
+          email: a,
         });
-
-        if (!response.ok) {
-          throw new Error(`Error: ${response.status}`);
-        }
-
-        const result = await response.json();
-        if(type === "email") {
-          navigate('/dashboard')
-        }
-        return result;
+        setSubmissionId(newSubmissionId);
+        localStorage.setItem('SubmissionID', newSubmissionId);
       } catch (error) {
-        console.error('Error:', error);
-        throw error; // Rethrow error to be handled outside
+        // eslint-disable-next-line no-console
+        console.error('Failed to save submission to Supabase', error);
       }
+
+      navigate('/dashboard');
     }
   }
 

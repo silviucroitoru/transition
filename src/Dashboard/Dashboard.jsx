@@ -15,29 +15,16 @@ export default function Dashboard() {
     mixpanel.people.set({ '$name': localStorage.getItem('userName'),
                           '$email': localStorage.getItem('bloomEmail'),
     });
-    const myHeaders = new Headers();
-    myHeaders.append("X-Api-Key", `${import.meta.env.VITE_API_KEY}`);
-    myHeaders.append("Content-Type", "application/json");
     setTimeout(() => {setDisplay(true)}, 13600)
-    const requestOptions = {
-      method: "GET",
-      headers: myHeaders,
-    };
-
-    fetch(`${import.meta.env.VITE_API_URL}/default/generateMenoScore?submissionId=${localStorage.getItem('SubmissionID') ?? 9999999}&language=${language.toUpperCase() ?? 'RO'}`, requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        const fullJson = JSON.parse(result.content)
-        console.log(fullJson)
-        setScoreSummary({
-          scoreTitle: fullJson.menoScore?.scoretitle || null,
-          stageTitle: fullJson.menopauseStage?.stagetitle || null,
-          symptomsTitle: fullJson.keySymptoms?.moderateImpact?.length > 0 || fullJson.keySymptoms?.mostImpactful?.length > 0 ? fullJson.keySymptoms.symptomstitle : null,
-          recommendationsTitle: (fullJson.anxietyRecommendation || fullJson.depressionRecommendation) ? "Recommendations" : null
-        })
-        setScoreJson(fullJson)
-      })
-      .catch((error) => console.error(error));
+    // For the simplified app, use local mock score/result data instead of calling the legacy API.
+    const fullJson = mockData;
+    setScoreSummary({
+      scoreTitle: fullJson.menoScore?.scoretitle || null,
+      stageTitle: fullJson.menopauseStage?.stagetitle || null,
+      symptomsTitle: fullJson.keySymptoms?.moderateImpact?.length > 0 || fullJson.keySymptoms?.mostImpactful?.length > 0 ? fullJson.keySymptoms.symptomstitle : null,
+      recommendationsTitle: (fullJson.anxietyRecommendation || fullJson.depressionRecommendation) ? "Recommendations" : null
+    })
+    setScoreJson(fullJson)
    // eslint-disable-next-line
   }, []);
   return (
