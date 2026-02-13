@@ -1,9 +1,10 @@
+import { brand } from '../../config/brand';
+
 export default function HeaderArea({currentPage, progressPages, qLength}) {
   return(
     <>
-      <a href="/">
-        <img src="https://evrbloom.ro/cdn/shop/files/evrbloom_logo.svg?v=1742998418&width=100" alt="EvrBloom"
-             className="logo"/>
+      <a href={brand.logo.link}>
+        <img src={brand.logo.src} alt={brand.logo.alt} className="logo" />
       </a>
       {
         currentPage.position !== 1 && (

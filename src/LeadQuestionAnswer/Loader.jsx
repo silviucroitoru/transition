@@ -1,14 +1,15 @@
 import {createIntl, FormattedMessage} from "react-intl";
 import { useState, useEffect } from "react";
-import "./loader.css"
-import EnglishMessages from "../locales/en/translations.json"
+import "./loader.css";
+import EnglishMessages from "../locales/en/translations.json";
 import RomanianMessages from "../locales/ro/translations.json";
+import { brand } from "../config/brand";
 
 const messages = {
   en: EnglishMessages,
   ro: RomanianMessages,
 };
-export default function Menoscore() {
+export default function Loader() {
   const [currentStep, setCurrentStep] = useState(0);
 
   useEffect(() => {
@@ -32,9 +33,8 @@ export default function Menoscore() {
   return (
     <div className="loader">
       <div className="topic-header">
-        <a href="https://score.evrbloom.ro/dashboard">
-          <img src="https://evrbloom.ro/cdn/shop/files/evrbloom_logo.svg?v=1742998418&width=100" alt="EvrBloom"
-               className="logo"/>
+        <a href={brand.logo.link}>
+          <img src={brand.logo.src} alt={brand.logo.alt} className="logo" />
         </a>
       </div>
       <div className="loader-content">

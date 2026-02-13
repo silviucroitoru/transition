@@ -1,15 +1,15 @@
-.meno-score-container{
+.transition-score-container{
   width: 100%;
   display: flex;
   justify-content: flex-start;
   flex-direction: column;
   row-gap: 32px;
 }
-.meno-stage{
+.transition-stage{
   max-width: 640px;
   height: auto;
 }
-.meno-stage .meno-stage-prehead{
+.transition-stage .transition-stage-prehead{
   font-family: "SofiaPro-Medium";
   color: var(--main-grey);
   font-size: 14px;
@@ -29,13 +29,13 @@
   letter-spacing: -0.42px;
   max-width: 640px;
 }
-.meno-stage-main-content{
+.transition-stage-main-content{
   margin: 0 0 32px 0;
   display: flex;
   column-gap: 64px;
   align-items: flex-start;
 }
-.meno-score-container .meno-stage-scale{
+.transition-score-container .transition-stage-scale{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -46,7 +46,7 @@
   position: relative;
   max-width: 576px;
 }
-.meno-score-container .meno-stage-scale .meno-stage-scale-container{
+.transition-score-container .transition-stage-scale .transition-stage-scale-container{
   width: 100%;
   position: relative;
   display: flex;
@@ -54,22 +54,22 @@
   align-items: flex-start;
   height: 48px;
 }
-.meno-score-container .meno-stage-scale .arrow{
+.transition-score-container .transition-stage-scale .arrow{
   transform: rotate(-90deg);
   position: absolute;
   top: 7px;
   left: 0;
   transition: left 2s linear;
 }
-.meno-score-container .meno-stage-scale .top-arrow{
+.transition-score-container .transition-stage-scale .top-arrow{
   position: absolute;
   right: 0;
   top: -7px;
 }
-.meno-score-container .meno-stage-scale .arrow.d-none{
+.transition-score-container .transition-stage-scale .arrow.d-none{
   display: none;
 }
-.meno-score-container .meno-stage-scale .item{
+.transition-score-container .transition-stage-scale .item{
   color: var(--main-grey);
   font-family: "SofiaPro-Regular";
   font-size: 14px;
@@ -84,10 +84,10 @@
   padding-top: 26px;
   text-align: center;
 }
-.meno-score-container .meno-stage-scale .item.active{
+.transition-score-container .transition-stage-scale .item.active{
   color: var(--main-blue);
 }
-.meno-score-container .meno-stage-scale .item:before{
+.transition-score-container .transition-stage-scale .item:before{
   content: '';
   position: absolute;
   left: 50%;
@@ -99,32 +99,32 @@
   background-color: var(--secondary-blue-20);
   transition: background-color 0.2s linear;
 }
-.meno-score-container .meno-stage-scale .item.active:before{
+.transition-score-container .transition-stage-scale .item.active:before{
   background-color: var(--main-blue);
   transition: background-color 0.2s linear;
 }
-.meno-score-container .meno-stage-scale .item.item1{
+.transition-score-container .transition-stage-scale .item.item1{
   left: 64px;
 }
-.meno-score-container .meno-stage-scale .item.item2{
+.transition-score-container .transition-stage-scale .item.item2{
   left: 64px;
 }
-.meno-score-container .meno-stage-scale .item.item1.active:before{
+.transition-score-container .transition-stage-scale .item.item1.active:before{
   transition-delay: 0s;
 }
-.meno-score-container .meno-stage-scale .item.item2.active:before{
+.transition-score-container .transition-stage-scale .item.item2.active:before{
   transition-delay: 750ms;
 }
-.meno-score-container .meno-stage-scale .item.item3.active:before{
+.transition-score-container .transition-stage-scale .item.item3.active:before{
   transition-delay: 1500ms;
 }
-.meno-score-container .meno-stage-scale .item.item4.active:before{
+.transition-score-container .transition-stage-scale .item.item4.active:before{
   transition-delay: 1800ms;
 }
-.meno-score-container .meno-stage-text{
+.transition-score-container .transition-stage-text{
   flex: 1;
 }
-.meno-score-container .meno-stage-text .meno-stage-prehead{
+.transition-score-container .transition-stage-text .transition-stage-prehead{
   font-family: "SofiaPro-Medium";
   color: var(--main-grey);
   font-size: 14px;
@@ -133,7 +133,7 @@
   line-height: 20px;
   letter-spacing: -0.42px;
 }
-.meno-score-container .meno-stage-scale .line-small{
+.transition-score-container .transition-stage-scale .line-small{
   width: 60px;
   height: 4px;
   background-color: var(--secondary-blue-20);
@@ -141,7 +141,7 @@
   border-radius: 24px;
   left: 0;
 }
-.meno-score-container .meno-stage-scale .line-big{
+.transition-score-container .transition-stage-scale .line-big{
   width: calc((100% - 200px)/3);
   height: 4px;
   background-color: var(--secondary-blue-20);
@@ -150,8 +150,8 @@
   left: 20px;
   top: 0;
 }
-.meno-score-container .meno-stage-scale .line-small span,
-.meno-score-container .meno-stage-scale .line-big span{
+.transition-score-container .transition-stage-scale .line-small span,
+.transition-score-container .transition-stage-scale .line-big span{
   height: 100%;
   width: 0;
   bottom: 0;
@@ -160,15 +160,15 @@
   transition: width 0.5s linear;
   border-radius: 24px;
 }
-.meno-score-container .meno-stage-scale .line-big span.active{
+.transition-score-container .transition-stage-scale .line-big span.active{
   transition: width 0.5s linear;
   width: 100%
 }
-.meno-score-container .meno-stage-scale .line-small span.active{
+.transition-score-container .transition-stage-scale .line-small span.active{
   transition: width 0.25s linear;
   width: 100%
 }
-.meno-stage-main-content .meno-stage-text .meno-stage-title{
+.transition-stage-main-content .transition-stage-text .transition-stage-title{
   color: var(--main-blue);
   font-family: "SofiaPro-Medium";
   font-size: 24px;
@@ -178,7 +178,7 @@
   letter-spacing: -0.72px;
   margin: 0 0 24px;
 }
-.meno-stage-main-content .meno-stage-text .meno-stage-description{
+.transition-stage-main-content .transition-stage-text .transition-stage-description{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 16px;
@@ -187,7 +187,7 @@
   line-height: 24px; /* 150% */
   letter-spacing: -0.16px;
 }
-.meno-stage-description p{
+.transition-stage-description p{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 16px;
@@ -197,10 +197,10 @@
   letter-spacing: -0.16px;
   margin: 0 0 24px 0;
 }
-.meno-stage-description p:last-child{
+.transition-stage-description p:last-child{
   margin: 0;
 }
-.meno-stage-main-content .meno-stage-text .meno-stage-description a{
+.transition-stage-main-content .transition-stage-text .transition-stage-description a{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 16px;
@@ -210,8 +210,8 @@
   letter-spacing: -0.16px;
   text-decoration: underline;
 }
-.meno-score .meno-stage-stats,
-.meno-stage .meno-stage-stats{
+.transition-score .transition-stage-stats,
+.transition-stage .transition-stage-stats{
   border-radius: 16px;
   background-color: #F5F6F8;
   padding: 24px;
@@ -222,8 +222,8 @@
   gap: 8px;
   margin-bottom: 32px;
 }
-.meno-score .meno-stage-stats .percent,
-.meno-stage .meno-stage-stats .percent{
+.transition-score .transition-stage-stats .percent,
+.transition-stage .transition-stage-stats .percent{
   color: var(--main-blue);
   font-family: "SofiaPro-Medium";
   font-size: 28px;
@@ -232,10 +232,10 @@
   line-height: 36px; /* 128.571% */
   letter-spacing: -0.84px;
 }
-.meno-score .meno-stage-stats .text,
-.meno-score .meno-stage-stats .text a,
-.meno-stage .meno-stage-stats .text,
-.meno-stage .meno-stage-stats .text a{
+.transition-score .transition-stage-stats .text,
+.transition-score .transition-stage-stats .text a,
+.transition-stage .transition-stage-stats .text,
+.transition-stage .transition-stage-stats .text a{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 14px;
@@ -244,8 +244,8 @@
   line-height: 20px;
   letter-spacing: -0.42px;
 }
-.meno-score .meno-stage-stats .text a,
-.meno-stage .meno-stage-stats .text a{
+.transition-score .transition-stage-stats .text a,
+.transition-stage .transition-stage-stats .text a{
   text-decoration-line: underline;
   text-decoration-style: solid;
   text-decoration-skip-ink: none;
@@ -253,7 +253,7 @@
   text-underline-offset: auto;
   text-underline-position: from-font;
 }
-.meno-stage-explanation{
+.transition-stage-explanation{
   color: var(--main-grey);
   font-family: "SofiaPro-Regular";
   font-size: 12px;
@@ -265,62 +265,62 @@
   padding-bottom: 48px;
   border-bottom: 1px solid #D8DBE4;
 }
-.meno-score .meno-stage-action-buttons,
-.meno-stage .meno-stage-action-buttons{
+.transition-score .transition-stage-action-buttons,
+.transition-stage .transition-stage-action-buttons{
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 48px;
 }
-.meno-score .meno-stage-action-buttons.meno-score-action-buttons{
+.transition-score .transition-stage-action-buttons.transition-score-action-buttons{
   margin-bottom: 32px;
   margin-top: 32px;
 }
-.meno-stage .meno-stage-action-buttons .button,
-.meno-score .meno-stage-action-buttons .button{
+.transition-stage .transition-stage-action-buttons .button,
+.transition-score .transition-stage-action-buttons .button{
   font-size: 14px;
   line-height: 20px;
 }
 @media screen and (min-width: 990px){
-  .meno-score .meno-stage-stats,
-  .meno-stage .meno-stage-stats{
+  .transition-score .transition-stage-stats,
+  .transition-stage .transition-stage-stats{
     flex-direction: row;
     gap: 16px;
     justify-content: flex-start;
     align-items: center;
   }
-  .meno-score .meno-stage-stats .percent,
-  .meno-stage .meno-stage-stats .percent{
+  .transition-score .transition-stage-stats .percent,
+  .transition-stage .transition-stage-stats .percent{
     font-size: 28px;
     font-style: normal;
     font-weight: 500;
     line-height: 36px; /* 128.571% */
     letter-spacing: -0.84px;
   }
-  .meno-score .meno-stage-stats .text,
-  .meno-score .meno-stage-stats .text a,
-  .meno-stage .meno-stage-stats .text,
-  .meno-stage .meno-stage-stats .text a{
+  .transition-score .transition-stage-stats .text,
+  .transition-score .transition-stage-stats .text a,
+  .transition-stage .transition-stage-stats .text,
+  .transition-stage .transition-stage-stats .text a{
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px; /* 142.857% */
     letter-spacing: -0.42px;
   }
-  .meno-stage-explanation{
+  .transition-stage-explanation{
     padding-bottom: 32px;
   }
 }
-.meno-score{
+.transition-score{
   max-width: 640px;
   height: auto;
   margin-top: 16px;
 }
-.meno-score .score-circle{
+.transition-score .score-circle{
   margin-bottom: 32px;
 }
-.meno-score .score-circle text{
+.transition-score .score-circle text{
   color: var(--main-blue);
   font-family: "SofiaPro-SemiBold";
   font-size: 36px;
@@ -329,16 +329,16 @@
   line-height: 38px; /* 105.556% */
   letter-spacing: -0.36px;
 }
-.meno-score .score-circle text:last-of-type{
+.transition-score .score-circle text:last-of-type{
   font-size: 14px;
   line-height: 28px;
   letter-spacing: -0.21px;
 }
 @media screen and (min-width: 990px){
-  .meno-score{
+  .transition-score{
     margin-top: 32px;
   }
-  .meno-score .meno-stage-action-buttons.meno-score-action-buttons{
+  .transition-score .transition-stage-action-buttons.transition-score-action-buttons{
     margin-bottom: 48px;
   }
 }
@@ -489,10 +489,10 @@
   position: relative;
   top: -1px;
 }
-.meno-score-container .box#whats_next{
+.transition-score-container .box#whats_next{
   background-color: var(--main-blue);
 }
-.meno-score-container .box{
+.transition-score-container .box{
   border: 1px solid var(--secondary-blue-20);
   border-radius: 16px;
   padding: 32px;
@@ -501,7 +501,7 @@
   column-gap: 64px;
   align-items: flex-start;
 }
-.meno-score-container .box .title{
+.transition-score-container .box .title{
   color: var(--main-blue);
   font-family: "SofiaPro-Medium";
   font-size: 24px;
@@ -513,10 +513,10 @@
   width: 100%;
   max-width: 320px;
 }
-.meno-score-container .box#whats_next .title{
+.transition-score-container .box#whats_next .title{
   color: #FFF;
 }
-.meno-score-container .box .description{
+.transition-score-container .box .description{
   color: var(--secondary-blue-80);
   font-family: "SofiaPro-Regular";
   font-size: 16px;
@@ -525,13 +525,13 @@
   line-height: 24px; /* 150% */
   letter-spacing: -0.16px;
 }
-.meno-score-container .box#whats_next .description ul{
+.transition-score-container .box#whats_next .description ul{
   color: #FFF;
   background-color: transparent;
   border: 0;
   margin: 0;
 }
-.meno-score-container .box#whats_next .description ul li{
+.transition-score-container .box#whats_next .description ul li{
   background-color: transparent;
   padding: 0 0 0 28px;
   font-family: "SofiaPro-Regular";
@@ -558,14 +558,14 @@ a.button.whatsapp{
   gap: 8px;
 }
 @media screen and (min-width: 990px){
-  .meno-score-container .box#whats_next{
+  .transition-score-container .box#whats_next{
     justify-content: space-between;
     column-gap: 12px;
   }
-  .meno-score-container .box#whats_next .description ul{
+  .transition-score-container .box#whats_next .description ul{
     width: 480px;
   }
-  .meno-score-container .box#whats_next .description ul li{
+  .transition-score-container .box#whats_next .description ul li{
     background-image: url('../assets/checked-circled.svg');
     font-size: 14px;
     font-style: normal;
@@ -578,23 +578,23 @@ a.button.whatsapp{
     margin-top: 24px;
   }
 }
-.meno-score-container .box#whats_next .description ul li:last-child{
+.transition-score-container .box#whats_next .description ul li:last-child{
   margin-bottom: 0;
 }
-.meno-score-container .box .actions{
+.transition-score-container .box .actions{
   display: flex;
   column-gap: 8px;
   margin-top: 24px;
   flex-wrap: wrap;
   row-gap: 16px;
 }
-.meno-score-container .box .info-box{
+.transition-score-container .box .info-box{
   padding: 24px;
   background-color: #F5F6F8;
   border-radius: 16px;
   min-width: 192px;
 }
-.meno-score-container .box .info-box .stats{
+.transition-score-container .box .info-box .stats{
   color: var(--main-blue);
   font-family: "SofiaPro-SemiBold";
   font-size: 24px;
@@ -604,7 +604,7 @@ a.button.whatsapp{
   letter-spacing: -0.96px;
   margin: 0 0 8px 0;
 }
-.meno-score-container .box .info-box .stats-desc{
+.transition-score-container .box .info-box .stats-desc{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 14px;
@@ -614,29 +614,29 @@ a.button.whatsapp{
   letter-spacing: -0.42px;
 }
 @media screen and (min-width: 990px){
-  .meno-score-container .box#whats_next .info-box{
+  .transition-score-container .box#whats_next .info-box{
     width: 192px;
   }
-  .meno-score-container .box .actions{
+  .transition-score-container .box .actions{
     margin-top: 32px;
   }
 }
-.meno-score-container .box .info-box-dr{
+.transition-score-container .box .info-box-dr{
   width: 240px;
   border-radius: 24px;
 }
-.meno-score-container .box .info-box-dr>img{
+.transition-score-container .box .info-box-dr>img{
   width: 100%;
   min-width: 240px;
   border-radius: 24px 24px 0 0;
   display: block;
 }
-.meno-score-container .box .info-box-dr .dr-info{
+.transition-score-container .box .info-box-dr .dr-info{
   padding: 24px;
   background-color: #F5F6F8;
   border-radius: 0 0 24px 24px;
 }
-.meno-score-container .box .info-box-dr .dr-info .dr-name{
+.transition-score-container .box .info-box-dr .dr-info .dr-name{
   color: var(--main-blue);
   font-family: "SofiaPro-SemiBold";
   font-size: 18px;
@@ -646,7 +646,7 @@ a.button.whatsapp{
   letter-spacing: -0.54px;
   margin: 0 0 8px 0;
 }
-.meno-score-container .box .info-box-dr .dr-info .dr-desc{
+.transition-score-container .box .info-box-dr .dr-info .dr-desc{
   color: var(--main-blue);
   font-family: "SofiaPro-Regular";
   font-size: 14px;
@@ -655,7 +655,7 @@ a.button.whatsapp{
   line-height: 20px; /* 142.857% */
   letter-spacing: -0.42px;
 }
-.meno-score-container .box .button{
+.transition-score-container .box .button{
   padding: 8px 16px;
   font-family: "SofiaPro-Regular";
   font-size: 14px;
@@ -664,7 +664,7 @@ a.button.whatsapp{
   line-height: 20px; /* 142.857% */
   letter-spacing: -0.42px;
 }
-.meno-stage-scale-mobile{
+.transition-stage-scale-mobile{
   display: none;
 }
 .results .topic-header{
@@ -686,30 +686,30 @@ a.button.whatsapp{
   }
 }
 @media screen and (max-width: 749px){
-  .meno-score-container .box{
+  .transition-score-container .box{
     padding: 24px;
     flex-direction: column;
     row-gap: 32px;
   }
-  .meno-score-container .box#book_call{
+  .transition-score-container .box#book_call{
     margin-bottom: 64px !important;
   }
-  .meno-stage{
+  .transition-stage{
     border: 0;
   }
-  .meno-stage-main-content{
+  .transition-stage-main-content{
     flex-direction: column;
     row-gap: 32px;
   }
-  .meno-score-container .meno-stage-scale{
+  .transition-score-container .transition-stage-scale{
     margin-left: 50%;
     transform: translateX(-50%);
     display: none;
   }
-  .meno-score-container .box .info-box-dr{
+  .transition-score-container .box .info-box-dr{
     width: 100%;
   }
-  .meno-score-container .box .description{
+  .transition-score-container .box .description{
     color: var(--main-blue);
   }
   .simptoms-recommendations .symptom:last-child{
@@ -731,16 +731,16 @@ a.button.whatsapp{
   #symptoms .action-buttons{
     padding: 24px 0;
   }
-  .meno-stage-main-content{
+  .transition-stage-main-content{
     margin: 0 0 24px 0;
   }
-  .meno-stage-main-content>svg{
+  .transition-stage-main-content>svg{
     margin: 0 auto;
   }
-  .meno-stage-main-content .meno-stage-text .meno-stage-title{
+  .transition-stage-main-content .transition-stage-text .transition-stage-title{
     margin: 0 0 16px 0;
   }
-  .meno-stage-scale-mobile{
+  .transition-stage-scale-mobile{
     background-color: var(--main-blue);
     padding: 24px;
     border-radius: 16px;
@@ -751,7 +751,7 @@ a.button.whatsapp{
     flex-direction: column;
     width: calc(100% - 48px);
   }
-  .meno-stage-scale-mobile .bubble{
+  .transition-stage-scale-mobile .bubble{
     padding: 8px 24px;
     background-color: #FFF;
     border-radius: 8px;
@@ -765,7 +765,7 @@ a.button.whatsapp{
     letter-spacing: -0.24px;
     margin-top: 12px;
   }
-  .meno-stage-scale-mobile .bubble:before{
+  .transition-stage-scale-mobile .bubble:before{
     content: '';
     display: block;
     position: absolute;

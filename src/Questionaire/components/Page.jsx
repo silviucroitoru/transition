@@ -52,6 +52,22 @@ export default function Page({page, next, back, currentPage, userName, language}
           dataPointName={page.DataPointName}
         />
       )
+    case 'single_option_with_helper':
+      return (
+        <SingleOption
+          type={page.QuestionType}
+          options={page.settings.options}
+          question={page.settings.QuestionText}
+          helper={page.settings.QuestionHelper}
+          jump={page.jump}
+          id={page.position}
+          next={next}
+          back={back}
+          currentPage={currentPage}
+          dataPointId={page.DataPointID}
+          dataPointName={page.DataPointName}
+        />
+      )
     case 'scale':
       return (
         <SingleOption
@@ -196,5 +212,25 @@ export default function Page({page, next, back, currentPage, userName, language}
           dataPointName={page.DataPointName}
         />
       )
+    default:
+      // Fallback for single_option-like questions (e.g. TransitionType) when DB uses different casing
+      if (page.settings?.options && page.settings?.QuestionText != null) {
+        return (
+          <SingleOption
+            type="single_option"
+            options={page.settings.options}
+            question={page.settings.QuestionText}
+            helper={page.settings.QuestionHelper ?? ''}
+            jump={page.jump}
+            id={page.position}
+            next={next}
+            back={back}
+            currentPage={currentPage}
+            dataPointId={page.DataPointID}
+            dataPointName={page.DataPointName}
+          />
+        );
+      }
+      return null;
   }
 }

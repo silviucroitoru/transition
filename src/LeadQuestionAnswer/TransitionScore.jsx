@@ -1,60 +1,59 @@
 import { useState, useEffect } from "react";
 import ScoreCircle from "./ScoreCircle.jsx";
-import "./menoscore.css";
+import "./transition-score.css";
 import 'swiper/css';
-import { FormattedMessage, createIntl } from "react-intl";
+import { FormattedMessage, useIntl } from "react-intl";
 import virginiaImage from '../assets/virginia-lazar.png';
-import EnglishMessages from "../locales/en/translations.json"
-import RomanianMessages from "../locales/ro/translations.json";
 import mixpanel from "mixpanel-browser";
-import { useTranslate } from "@tolgee/react";
+import { brand } from '../config/brand';
 
-const messages = {
-  en: EnglishMessages,
-  ro: RomanianMessages,
-};
-
-export default function Menoscore({scoreJson, scoreSummary}) {
-  const { t } = useTranslate();
+export default function TransitionScore({scoreJson, scoreSummary}) {
+  const intl = useIntl();
   const [arrowPosition, setArrowPosition] = useState(0);
   const [index, setIndex] = useState(-1);
   const [currentTab, setCurrentTab] = useState("high");
   const [lineWidth, setLineWidth] = useState(0);
-  const [premenopauseWidth, setPremenopauseWidth] = useState(0);
-  const [perimenopauseWidth, setPerimenopauseWidth] = useState(0);
-  const [menopauseWidth, setMenopauseWidth] = useState(0);
-  const [postmenopauseWidth, setPostmenopauseWidth] = useState(0);
-  const language = localStorage.getItem('language').toLowerCase();
-  function getTranslatedMessage(id, values = {}) {
-    const intl = createIntl(
-      {
-        locale: language,
-        messages: messages[language],
-      },
-    );
-    return intl.formatMessage({ id }, values);
-  }
-  const stages = [getTranslatedMessage("premenopause", {}), getTranslatedMessage("perimenopause", {}),  getTranslatedMessage("menopause", {}), getTranslatedMessage("postmenopause", {})];
+  const [stage0Width, setStage0Width] = useState(0);
+  const [stage1Width, setStage1Width] = useState(0);
+  const [stage2Width, setStage2Width] = useState(0);
+  const [stage3Width, setStage3Width] = useState(0);
+  const language = localStorage.getItem('language')?.toLowerCase() ?? 'en';
+  const defaultStages = [
+    intl.formatMessage({ id: "premenopause" }),
+    intl.formatMessage({ id: "perimenopause" }),
+    intl.formatMessage({ id: "menopause" }),
+    intl.formatMessage({ id: "postmenopause" }),
+  ];
+  const stages = (scoreJson.transitionStage?.stages && scoreJson.transitionStage.stages.length === 4)
+    ? scoreJson.transitionStage.stages
+    : defaultStages;
   useEffect(() => {
     mixpanel.track('[Page View] Dashboard', {source: 'Dashboard'})
-    setPremenopauseWidth(-6 + document.getElementById('premenopause').offsetWidth / 2);
-    setPerimenopauseWidth(-6 + document.getElementById('perimenopause').offsetWidth / 2);
-    setMenopauseWidth(-6 + document.getElementById('menopause').offsetWidth / 2);
-    setPostmenopauseWidth(-6 + document.getElementById('postmenopause').offsetWidth / 2);
+    const el0 = document.getElementById('stage0');
+    const el1 = document.getElementById('stage1');
+    const el2 = document.getElementById('stage2');
+    const el3 = document.getElementById('stage3');
+    if (el0) setStage0Width(-6 + el0.offsetWidth / 2);
+    if (el1) setStage1Width(-6 + el1.offsetWidth / 2);
+    if (el2) setStage2Width(-6 + el2.offsetWidth / 2);
+    if (el3) setStage3Width(-6 + el3.offsetWidth / 2);
   }, [])
   useEffect(() => {
     setTimeout(() => {
-      const indexOfStage =   stages.indexOf(scoreJson.menopauseStage.stage);
+      const stage = scoreJson?.transitionStage?.stage;
+      const indexOfStage = stage != null ? stages.indexOf(stage) : -1;
       setIndex(indexOfStage);
-      setArrowPosition(64 + indexOfStage * lineWidth + 20*indexOfStage)
-    }, 500)
-  }, [lineWidth])
+      const safeIndex = indexOfStage >= 0 ? indexOfStage : 0;
+      setArrowPosition(64 + safeIndex * lineWidth + 20 * safeIndex);
+    }, 500);
+  }, [lineWidth]);
   const trackEvent = (event, source) => {
     mixpanel.track(event, {source: source})
   }
   const adjustMargin = () => {
     const bookCallSection = document.getElementById("book_call");
     const scaleContainer = document.getElementById("scale_container");
+    if (!scaleContainer) return;
     const scaleContainerWidth = scaleContainer.offsetWidth;
     setLineWidth((scaleContainerWidth - 200) / 3)
     setArrowPosition(64 + index * ((scaleContainerWidth - 200) / 3) + 20*index)
@@ -70,37 +69,55 @@ export default function Menoscore({scoreJson, scoreSummary}) {
     window.addEventListener("resize", adjustMargin);
     return () => window.removeEventListener("resize", adjustMargin);
   }, []);
-  const rawDescriptionStage = scoreJson.menopauseStage.description;
-  const rawDescriptionScore = scoreJson.menoScore.description;
-  const htmlDescriptionStage = rawDescriptionStage.replace(
+  const phaseName = scoreJson?.transitionStage?.stage;
+  const phaseSlug = phaseName ? String(phaseName).toLowerCase() : null;
+  const firstName = localStorage.getItem('userName') ?? '';
+  const transitionTypeValue = localStorage.getItem('transitionType');
+  const dontKnowValue = intl.formatMessage({ id: 'transition_type_dont_know_value', defaultMessage: '6' });
+  const useDescriptionWithTransitionType = transitionTypeValue != null && transitionTypeValue !== '' && transitionTypeValue !== dontKnowValue;
+  const transitionTypeLabel = useDescriptionWithTransitionType && transitionTypeValue != null
+    ? intl.formatMessage({ id: `transition_type_${transitionTypeValue}`, defaultMessage: transitionTypeValue })
+    : '';
+  const phaseDescKey = phaseSlug
+    ? `transition_phase_${phaseSlug}_description${useDescriptionWithTransitionType ? '' : '_no_type'}`
+    : null;
+  const rawDescriptionStage = phaseDescKey
+    ? intl.formatMessage(
+        { id: phaseDescKey, defaultMessage: scoreJson?.transitionStage?.description ?? '' },
+        useDescriptionWithTransitionType
+          ? { FirstName: firstName, TransitionType: transitionTypeLabel }
+          : { FirstName: firstName }
+      )
+    : (scoreJson?.transitionStage?.description ?? '');
+  const rawDescriptionScore = scoreJson?.transitionScore?.description ?? '';
+  const htmlDescriptionStage = String(rawDescriptionStage).replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
-  const htmlDescriptionScore = rawDescriptionScore.replace(
+  const htmlDescriptionScore = String(rawDescriptionScore).replace(
     /\[([^\]]+)\]\(([^)]+)\)/g,
     '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>'
   );
   let stageMoreLink;
   if(index === 1){
-    stageMoreLink = getTranslatedMessage('perimenopause_link', {})
+    stageMoreLink = intl.formatMessage({ id: 'perimenopause_link' })
   } else if(index === 2){
-    stageMoreLink = getTranslatedMessage('menopause_link', {})
+    stageMoreLink = intl.formatMessage({ id: 'menopause_link' })
   } else if(index === 3){
-    stageMoreLink = getTranslatedMessage('postmenopause_link', {})
+    stageMoreLink = intl.formatMessage({ id: 'postmenopause_link' })
   }
 
   return (
     <div className="results">
       <div className="topic-header">
-        <a href="https://score.evrbloom.ro/dashboard">
-          <img src="https://evrbloom.ro/cdn/shop/files/evrbloom_logo.svg?v=1742998418&width=100" alt="EvrBloom"
-               className="logo"/>
+        <a href={brand.logo.link}>
+          <img src={brand.logo.src} alt={brand.logo.alt} className="logo" />
         </a>
       </div>
-      <div className="meno-score-container">
+      <div className="transition-score-container">
         {
           index > -1 && (
-            <div className="meno-stage-scale-mobile">
+            <div className="transition-stage-scale-mobile">
               <svg width="33" height="32" viewBox="0 0 33 32" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="0.5" width="32" height="32" rx="16" fill="#D8DBE4"/>
                 <circle cx="16.5" cy="16" r="8" fill="white"/>
@@ -112,8 +129,8 @@ export default function Menoscore({scoreJson, scoreSummary}) {
             </div>
           )
         }
-        <div className="meno-stage-scale">
-          <div className="meno-stage-scale-container" id="scale_container">
+        <div className="transition-stage-scale">
+          <div className="transition-stage-scale-container" id="scale_container">
             <div className={`arrow ${index === -1 ? 'd-none' : ''}`}
                  style={{left: arrowPosition, transitionDuration: `${(index + 1) * 500 + 250}ms`}}>
               <svg width="7" height="8" viewBox="0 0 7 8" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -125,26 +142,26 @@ export default function Menoscore({scoreJson, scoreSummary}) {
             <div className="line-small">
               <span className={index >= 0 ? 'active' : ''}></span>
             </div>
-            <div className={`item item1 ${index >= 0 ? 'active' : ''}`} style={{left: '64px', textIndent: -(premenopauseWidth)}}>
-              <span id="premenopause">{t('premenopause')}</span>
+            <div className={`item item1 ${index >= 0 ? 'active' : ''}`} style={{left: '64px', textIndent: -(stage0Width)}}>
+              <span id="stage0">{stages[0]}</span>
             </div>
             <div className="line-big" style={{left: '20px', width: `${lineWidth}px`}}>
               <span className={index > 0 ? 'active' : ''} style={{transitionDelay: "250ms"}}></span>
             </div>
-            <div className={`item item2 ${index > 0 ? 'active' : ''}`}  style={{left: `${lineWidth + 84}px`, textIndent: -(perimenopauseWidth)}}>
-              <span id="perimenopause">{t('perimenopause')}</span>
+            <div className={`item item2 ${index > 0 ? 'active' : ''}`}  style={{left: `${lineWidth + 84}px`, textIndent: -(stage1Width)}}>
+              <span id="stage1">{stages[1]}</span>
             </div>
             <div className="line-big" style={{left: `40px`, width: `${lineWidth}px`}}>
               <span className={index > 1 ? 'active' : ''} style={{transitionDelay: "750ms"}}></span>
             </div>
-            <div className={`item item3 ${index > 1 ? 'active' : ''}`}  style={{left: `${lineWidth*2 + 104}px`, textIndent: -(menopauseWidth)}}>
-              <span id="menopause">{t('menopause')}</span>
+            <div className={`item item3 ${index > 1 ? 'active' : ''}`}  style={{left: `${lineWidth*2 + 104}px`, textIndent: -(stage2Width)}}>
+              <span id="stage2">{stages[2]}</span>
             </div>
             <div className="line-big" style={{left: `60px`, width: `${lineWidth}px`}}>
               <span className={index > 2 ? 'active' : ''} style={{transitionDelay: "1250ms"}}></span>
             </div>
-            <div className={`item item4 ${index > 2 ? 'active' : ''}`}  style={{left: `${lineWidth*3 + 124}px`, textIndent: -(postmenopauseWidth)}}>
-              <span id="postmenopause">{t('postmenopause')}</span>
+            <div className={`item item4 ${index > 2 ? 'active' : ''}`}  style={{left: `${lineWidth*3 + 124}px`, textIndent: -(stage3Width)}}>
+              <span id="stage3">{stages[3]}</span>
             </div>
             <div className="top-arrow">
               <svg width="60" height="12" viewBox="0 0 60 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -158,25 +175,25 @@ export default function Menoscore({scoreJson, scoreSummary}) {
           </div>
 
         </div>
-        <div className="meno-stage" id={scoreJson.menopauseStage.stagetitle}>
-          <div className="meno-stage-main-content">
-            <div className="meno-stage-text">
-              <div className="meno-stage-prehead">
+        <div className="transition-stage" id={scoreJson?.transitionStage?.stagetitle ?? 'transition-phase'}>
+          <div className="transition-stage-main-content">
+            <div className="transition-stage-text">
+              <div className="transition-stage-prehead">
                 {scoreSummary.stageTitle}
               </div>
-              <div className="meno-stage-title">
-                {scoreJson.menopauseStage.stage}
+              <div className="transition-stage-title">
+                {scoreJson?.transitionStage?.stageDisplayName ?? scoreJson?.transitionStage?.stage ?? '—'}
               </div>
-              <div className="meno-stage-description"
+              <div className="transition-stage-description"
                    dangerouslySetInnerHTML={{__html: htmlDescriptionStage}}/>
             </div>
           </div>
-          <div className="meno-stage-action-buttons">
+          <div className="transition-stage-action-buttons">
             <a
-              href={getTranslatedMessage("become_member_link", {})}
+              href={intl.formatMessage({ id: "become_member_link" })}
               target="_blank"
               className="button whatsapp"
-              onClick={() => trackEvent(`Dashboard-Stage Click on ${getTranslatedMessage('become_member')} button`, 'Monepause stage section')}
+              onClick={() => trackEvent(`Dashboard-Stage Click on ${intl.formatMessage({ id: 'become_member' })} button`, 'Transition stage section')}
             >
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_1678_1939)">
@@ -190,7 +207,7 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                   </clipPath>
                 </defs>
               </svg>
-              <span>{t('become_member')}</span>
+              <span>{intl.formatMessage({ id: 'become_member' })}</span>
             </a>
             {
               index > 0 && (
@@ -198,9 +215,9 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                   href={stageMoreLink}
                   target="_blank"
                   className="button button--secondary more-link"
-                  onClick={() => trackEvent(`Dashboard-Stage Click on ${getTranslatedMessage('learn_about_stage')} button`, 'Monepause stage section')}
+                  onClick={() => trackEvent(`Dashboard-Stage Click on ${intl.formatMessage({ id: 'learn_about_stage' })} button`, 'Transition stage section')}
                 >
-                  <span>{t('learn_about_stage')}</span>
+                  <span>{intl.formatMessage({ id: 'learn_about_stage' })}</span>
                   <svg width="16" height="16" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                       d="M4.66602 9.99996H16.3327M16.3327 9.99996L10.4993 4.16663M16.3327 9.99996L10.4993 15.8333"
@@ -214,53 +231,53 @@ export default function Menoscore({scoreJson, scoreSummary}) {
               )
             }
           </div>
-          <div className="meno-stage-explanation"
-               dangerouslySetInnerHTML={{__html: getTranslatedMessage("menopause_stage_determination", {})}}
+          <div className="transition-stage-explanation"
+               dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "menopause_stage_determination" })}}
           />
         </div>
         {index > -1 && (
-          <div className="meno-score" id={scoreJson.menoScore.scoretitle}>
+          <div className="transition-score" id={scoreJson?.transitionScore?.scoretitle ?? 'transition-score'}>
             <ScoreCircle
-              score={scoreJson.menoScore.score}
+              score={scoreJson?.transitionScore?.score ?? 0}
               size={128}
               strokeWidth={8}
             />
-            <div className="meno-stage-main-content">
-              <div className="meno-stage-text">
-                <div className="meno-stage-prehead">
+            <div className="transition-stage-main-content">
+              <div className="transition-stage-text">
+                <div className="transition-stage-prehead">
                   {scoreSummary.scoreTitle}
                 </div>
-                <div className="meno-stage-title">
-                  {scoreJson.menoScore.scorename}
+                <div className="transition-stage-title">
+                  {scoreJson?.transitionScore?.scorename ?? ''}
                 </div>
-                <div className="meno-stage-description"
+                <div className="transition-stage-description"
                      dangerouslySetInnerHTML={{__html: htmlDescriptionScore}}/>
               </div>
             </div>
             {
               index > -1 && (
-                <div className="meno-stage-stats">
+                <div className="transition-stage-stats">
                   <div className="percent">
-                    {index === 0 && t('premenopause_percentage')}
-                    {index === 1 && t('perimenopause_percentage')}
-                    {index === 2 && t('menopause_percentage')}
-                    {index === 3 && t('postmenopause_percentage')}
+                    {index === 0 && intl.formatMessage({ id: 'premenopause_percentage' })}
+                    {index === 1 && intl.formatMessage({ id: 'perimenopause_percentage' })}
+                    {index === 2 && intl.formatMessage({ id: 'menopause_percentage' })}
+                    {index === 3 && intl.formatMessage({ id: 'postmenopause_percentage' })}
                   </div>
                   <div className="text">
-                    {index === 0 && t('premenopause_insights')}
-                    {index === 1 && t('perimenopause_insights')}
-                    {index === 2 && t('menopause_insights')}
-                    {index === 3 && t('postmenopauseinsights')}
+                    {index === 0 && intl.formatMessage({ id: 'premenopause_insights' })}
+                    {index === 1 && intl.formatMessage({ id: 'perimenopause_insights' })}
+                    {index === 2 && intl.formatMessage({ id: 'menopause_insights' })}
+                    {index === 3 && intl.formatMessage({ id: 'postmenopauseinsights' })}
                   </div>
                 </div>
               )
             }
-            <div className="meno-stage-action-buttons meno-score-action-buttons">
+            <div className="transition-stage-action-buttons transition-score-action-buttons">
               <a
-                href={getTranslatedMessage("become_member_link", {})}
+                href={intl.formatMessage({ id: "become_member_link" })}
                 target="_blank"
                 className="button whatsapp"
-                onClick={() => trackEvent(`Dashboard-Score Click on ${getTranslatedMessage('become_member')} button`, 'Monepause Score section')}
+                onClick={() => trackEvent(`Dashboard-Score Click on ${intl.formatMessage({ id: 'become_member' })} button`, 'Transition score section')}
               >
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <g clipPath="url(#clip0_1678_1939)">
@@ -274,15 +291,15 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                     </clipPath>
                   </defs>
                 </svg>
-                <span>{t('become_member')}</span>
+                <span>{intl.formatMessage({ id: 'become_member' })}</span>
               </a>
               <a
-                href={getTranslatedMessage("become_member_link", {})}
+                href={intl.formatMessage({ id: "become_member_link" })}
                 target="_blank"
                 className="button button--secondary more-link"
-                onClick={() => trackEvent(`Dashboard-Score Click on ${getTranslatedMessage('discover_membership_textlink')} button`, 'Monepause Score section')}
+                onClick={() => trackEvent(`Dashboard-Score Click on ${intl.formatMessage({ id: 'discover_membership_textlink' })} button`, 'Transition score section')}
               >
-                <span>{t('discover_membership_textlink')}</span>
+                <span>{intl.formatMessage({ id: 'discover_membership_textlink' })}</span>
                 <svg width="16" height="16" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path
                     d="M4.66602 9.99996H16.3327M16.3327 9.99996L10.4993 4.16663M16.3327 9.99996L10.4993 15.8333"
@@ -294,47 +311,47 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                 </svg>
               </a>
             </div>
-            <div className="meno-stage-explanation"
-                 dangerouslySetInnerHTML={{__html: getTranslatedMessage("score_explanation", {})}}/>
+            <div className="transition-stage-explanation"
+                 dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "score_explanation" })}}/>
           </div>
         )}
-        {(scoreJson.keySymptoms.mostImpactful.length > 0 || scoreJson.keySymptoms.moderateImpact.length > 0) && (
+        {((scoreJson?.keySymptoms?.mostImpactful?.length ?? 0) > 0 || (scoreJson?.keySymptoms?.moderateImpact?.length ?? 0) > 0) && (
           <div className="simptoms-recommendations" id="symptoms">
             <div className="symptoms-prehead">
-              {scoreJson.keySymptoms.symptomstitle}
+              {scoreJson?.keySymptoms?.symptomstitle ?? ''}
             </div>
             <div className="intro">
-              <h2>{t('symptomsTitle')}</h2>
-              <div className="intro-text">{t('symptomsDescription')}</div>
+              <h2>{intl.formatMessage({ id: 'symptomsTitle' })}</h2>
+              <div className="intro-text">{intl.formatMessage({ id: 'symptomsDescription' })}</div>
             </div>
-            {(scoreJson.keySymptoms.mostImpactful.length > 0 || scoreJson.keySymptoms.moderateImpact.length > 0) && (
+            {((scoreJson?.keySymptoms?.mostImpactful?.length ?? 0) > 0 || (scoreJson?.keySymptoms?.moderateImpact?.length ?? 0) > 0) && (
               <div className="action-buttons">
-                {scoreJson.keySymptoms.mostImpactful.length > 0 && (
+                {(scoreJson?.keySymptoms?.mostImpactful?.length ?? 0) > 0 && (
                   <button
                     className={`button ${currentTab === 'high' ? 'button--primary' : 'button--secondary'}`}
                     onClick={() => {
-                      trackEvent(`Dashboard Symptoms Click on ${getTranslatedMessage('high_impact')} button`, 'Symptoms Section')
+                      trackEvent(`Dashboard Symptoms Click on ${intl.formatMessage({ id: 'high_impact' })} button`, 'Symptoms Section')
                       setCurrentTab('high')
                     }}
                   >
-                    <span>{t('high_impact')}</span>
+                    <span>{intl.formatMessage({ id: 'high_impact' })}</span>
                   </button>
                 )}
-                {scoreJson.keySymptoms.moderateImpact.length > 0 && (
+                {(scoreJson?.keySymptoms?.moderateImpact?.length ?? 0) > 0 && (
                   <button
                     className={`button ${currentTab === 'moderate' ? 'button--primary' : 'button--secondary'}`}
                     onClick={() => {
-                      trackEvent(`Dashboard Symptoms Click on ${getTranslatedMessage('low_impact')} button`, 'Symptoms Section')
+                      trackEvent(`Dashboard Symptoms Click on ${intl.formatMessage({ id: 'low_impact' })} button`, 'Symptoms Section')
                       setCurrentTab('moderate')
                     }}
                   >
-                    <span>{t('low_impact')}</span>
+                    <span>{intl.formatMessage({ id: 'low_impact' })}</span>
                   </button>
                 )}
               </div>
             )}
             {
-              scoreJson.keySymptoms.mostImpactful && scoreJson.keySymptoms.mostImpactful.map((s, index) => (
+              scoreJson?.keySymptoms?.mostImpactful?.map((s, index) => (
                 <div
                   className={`symptom high symptom${index} ${s.isMentalHealth ? '' : ''} ${currentTab === 'high' ? '' : 'd-none'}`}
                   id="high_impact"
@@ -353,16 +370,16 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                               strokeLinejoin="round"/>
                       </svg>
                     )}
-                    {t(`${s.dataPointName.replaceAll(' ', '')}_name`)}
+                    {intl.formatMessage({ id: `${s.dataPointName.replaceAll(' ', '')}_name` })}
                   </div>
                   <div className="description"
-                       dangerouslySetInnerHTML={{__html: getTranslatedMessage(`${s.dataPointName?.replaceAll(" ", "")}_description`, {})}}/>
+                       dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: `${s.dataPointName?.replaceAll(" ", "")}_description` })}}/>
                   <div style={{display: "flex", gap: '16px', flexWrap: 'wrap'}}>
                     <a
-                      href={getTranslatedMessage('become_member_link', {})}
+                      href={intl.formatMessage({ id: 'become_member_link' })}
                       target="_blank"
                       className="button whatsapp"
-                      onClick={() => trackEvent(`Dashboard Impactful Symptom Click on ${getTranslatedMessage('talk_to_doctor')} button`, 'Impactful Symptom')}
+                      onClick={() => trackEvent(`Dashboard Impactful Symptom Click on ${intl.formatMessage({ id: 'talk_to_doctor' })} button`, 'Impactful Symptom')}
                     >
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_1678_1939)">
@@ -376,15 +393,15 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                           </clipPath>
                         </defs>
                       </svg>
-                      <span>{t('talk_to_doctor')}</span>
+                      <span>{intl.formatMessage({ id: 'talk_to_doctor' })}</span>
                     </a>
                     <a
-                      href={getTranslatedMessage(`${s.dataPointName?.replaceAll(" ", "")}_link`, {})}
+                      href={intl.formatMessage({ id: `${s.dataPointName?.replaceAll(" ", "")}_link` })}
                       target="_blank"
                       className="button button--secondary"
-                      onClick={() => trackEvent(`Dashboard Impactful Symptom Click on ${getTranslatedMessage('symptom_link_text')} button`, 'Impactful Symptom')}
+                      onClick={() => trackEvent(`Dashboard Impactful Symptom Click on ${intl.formatMessage({ id: 'symptom_link_text' })} button`, 'Impactful Symptom')}
                     >
-                      <span>{t('symptom_link_text')}</span>
+                      <span>{intl.formatMessage({ id: 'symptom_link_text' })}</span>
                       <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M4.66602 9.99996H16.3327M16.3327 9.99996L10.4993 4.16663M16.3327 9.99996L10.4993 15.8333"
@@ -401,7 +418,7 @@ export default function Menoscore({scoreJson, scoreSummary}) {
               ))
             }
             {
-              scoreJson.keySymptoms.moderateImpact && scoreJson.keySymptoms.moderateImpact.map(s => (
+              scoreJson?.keySymptoms?.moderateImpact?.map(s => (
                 <div className={`symptom symptom0 moderate ${currentTab === 'moderate' ? '' : 'd-none'}`} id="low_impact"
                      key={s.name}>
                   <div className="name">
@@ -409,16 +426,16 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                       <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#3D497A" strokeWidth="2" strokeLinecap="round"
                             strokeLinejoin="round"/>
                     </svg>
-                    {t(`${s.dataPointName.replaceAll(' ', '')}_name`)}/>
+                    {intl.formatMessage({ id: `${s.dataPointName.replaceAll(' ', '')}_name` })}/>
                   </div>
                   <div className="description"
-                       dangerouslySetInnerHTML={{__html: getTranslatedMessage(`${s.dataPointName?.replaceAll(" ", "")}_description`, {})}}/>
+                       dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: `${s.dataPointName?.replaceAll(" ", "")}_description` })}}/>
                   <div style={{display: "flex", gap: '16px', flexWrap: 'wrap', alignItems: 'center'}}>
                     <a
-                      href={getTranslatedMessage('become_member_link', {})}
+                      href={intl.formatMessage({ id: 'become_member_link' })}
                       target="_blank"
                       className="button whatapp"
-                      onClick={() => trackEvent(`Dashboard Moderate Symptom Click on ${getTranslatedMessage('talk_to_doctor')} button`, 'Moderate Symptom')}
+                      onClick={() => trackEvent(`Dashboard Moderate Symptom Click on ${intl.formatMessage({ id: 'talk_to_doctor' })} button`, 'Moderate Symptom')}
                     >
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <g clipPath="url(#clip0_1678_1939)">
@@ -433,15 +450,15 @@ export default function Menoscore({scoreJson, scoreSummary}) {
                         </defs>
                       </svg>
 
-                      <span>{t('talk_to_doctor')}</span>
+                      <span>{intl.formatMessage({ id: 'talk_to_doctor' })}</span>
                     </a>
                     <a
-                      href={getTranslatedMessage(`${s.dataPointName?.replaceAll(" ", "")}_link`, {})}
+                      href={intl.formatMessage({ id: `${s.dataPointName?.replaceAll(" ", "")}_link` })}
                       target="_blank"
                       className="button button--secondary"
-                      onClick={() => trackEvent(`Dashboard Moderate Symptom Click on ${getTranslatedMessage('symptom_link_text')} button`, 'Moderate Symptom')}
+                      onClick={() => trackEvent(`Dashboard Moderate Symptom Click on ${intl.formatMessage({ id: 'symptom_link_text' })} button`, 'Moderate Symptom')}
                     >
-                      <span>{t('symptom_link_text')}</span>
+                      <span>{intl.formatMessage({ id: 'symptom_link_text' })}</span>
                       <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                           d="M4.66602 9.99996H16.3327M16.3327 9.99996L10.4993 4.16663M16.3327 9.99996L10.4993 15.8333"
@@ -461,39 +478,39 @@ export default function Menoscore({scoreJson, scoreSummary}) {
         <div className="box" id="whats_next">
           <div className="content">
             <div className="title"
-                 dangerouslySetInnerHTML={{__html: getTranslatedMessage("membership_title", {})}}/>
+                 dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "membership_title" })}}/>
             <div className="description"
-                 dangerouslySetInnerHTML={{__html: getTranslatedMessage("membership_bullets", {})}}/>
+                 dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "membership_bullets" })}}/>
             <div className="actions">
               <a
-                href={getTranslatedMessage('membership_ctalink', {})}
+                href={intl.formatMessage({ id: 'membership_ctalink' })}
                 target="_blank"
                 className="button button--secondary"
-                onClick={() => trackEvent(`Dashboard What's Next Click on ${getTranslatedMessage('membership_cta')} button`, 'Next steps section')}
+                onClick={() => trackEvent(`Dashboard What's Next Click on ${intl.formatMessage({ id: 'membership_cta' })} button`, 'Next steps section')}
               >
-                <span>{t('membership_cta')}</span>
+                <span>{intl.formatMessage({ id: 'membership_cta' })}</span>
               </a>
             </div>
           </div>
           <div className="info-box">
-            <div className="stats">{t('membership_percentage')}</div>
-            <div className="stats-desc">{t('membership_insights')}</div>
+            <div className="stats">{intl.formatMessage({ id: 'membership_percentage' })}</div>
+            <div className="stats-desc">{intl.formatMessage({ id: 'membership_insights' })}</div>
           </div>
         </div>
         <div className="box" id="book_call">
           <div className="content">
             <div className="title"
-                 dangerouslySetInnerHTML={{__html: getTranslatedMessage("book_call_content_title", {})}}/>
+                 dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "book_call_content_title" })}}/>
             <div className="description"
-                 dangerouslySetInnerHTML={{__html: getTranslatedMessage("book_call_content_description", {})}}/>
+                 dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "book_call_content_description" })}}/>
             <div className="actions">
               <a
                 href="https://evrbloom.ro/pages/dr-virginia-lazar"
                 target="_blank"
                 className="button button--primary"
-                onClick={() => trackEvent(`Dashboard Book a call Click on ${getTranslatedMessage('book_call')} button`, 'Book a call section')}
+                onClick={() => trackEvent(`Dashboard Book a call Click on ${intl.formatMessage({ id: 'book_call' })} button`, 'Book a call section')}
               >
-                <span>{t('book_call')}</span>
+                <span>{intl.formatMessage({ id: 'book_call' })}</span>
               </a>
             </div>
           </div>
@@ -501,7 +518,7 @@ export default function Menoscore({scoreJson, scoreSummary}) {
             <img src={virginiaImage}/>
             <div className="dr-info">
               <div className="dr-name">Dr. Virginia Lazar</div>
-              <div className="dr-desc">{t('book_call_dr_info')}</div>
+              <div className="dr-desc">{intl.formatMessage({ id: 'book_call_dr_info' })}</div>
             </div>
 
           </div>

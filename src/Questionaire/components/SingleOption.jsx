@@ -59,21 +59,25 @@ export default function SingleOption({
         </div>
         <div className="options-container main-content-container" style={{ height: `calc(100% - ${headingContainer}px)` }}>
           {
-            options.map((option) => {
-              const answer = option.OptionText.replace('ț', 't').replace('î', 'i').replace('ă', 'a').replace('â', 'a').replace('Î', 'I').replace('ș', 's')
-              let nextPage = id + 1;
+            options.map((option, index) => {
+              const rawText = option.OptionText ?? option.OptionValue ?? '';
+              const answer = String(rawText).replace('ț', 't').replace('î', 'i').replace('ă', 'a').replace('â', 'a').replace('Î', 'I').replace('ș', 's');
+              let nextPage = Number(id) + 1;
               if (option.jump) {
                 nextPage = option.jump;
               } else if (jump) {
                 nextPage = jump;
               }
+              const val = (option.OptionValue != null)
+                ? option.OptionValue.toString()
+                : answer;
               return (
                 <div
-                  className={`option ${option.image_url ? 'with-image' : ''}`}
+                  className={`option ${option.image_url ? 'with-image' : ''} ${type === 'single_option_with_helper' ? 'option-with-helper' : ''}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => next(nextPage, dataPointId, dataPointName, type === 'scale' ? option.OptionValue.toString() : answer, type)}
-                  key={option.OptionText}
+                  onClick={() => next(nextPage, dataPointId, dataPointName, val, type)}
+                  key={option.OptionText ?? option.OptionValue ?? index}
                   data-question={id}
                 >
                   {option.image_url && (
@@ -87,8 +91,8 @@ export default function SingleOption({
                   )}
                   <div className="text-container">
                     <div className="q-text">{option.OptionText}</div>
-                    {option.helper && (
-                      <div className="helper">{option.helper}</div>
+                    {(option.helper ?? option.OptionHelper) && (
+                      <div className="helper">{option.helper ?? option.OptionHelper}</div>
                     )}
                   </div>
                 </div>

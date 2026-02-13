@@ -1,0 +1,30 @@
+{
+  "PhaseOrder": ["Awareness", "Stabilization", "Rebuild", "Integration"],
+  "PhaseByDataPoint": {
+    "HoldingThingsTogether": "Awareness",
+    "LooksStableFeelsEffortful": "Awareness",
+    "PostponeDeeperQuestions": "Awareness",
+    "FeelsFinished": "Stabilization",
+    "GriefReliefBoth": "Stabilization",
+    "HesitateLetGo": "Stabilization",
+    "ThinkNextNoAction": "Rebuild",
+    "OldDoesntFitNewUnclear": "Rebuild",
+    "PressureFigureOut": "Rebuild",
+    "ReadyNeedStructure": "Integration",
+    "EnergyNoRush": "Integration",
+    "BuildGrounded": "Integration"
+  },
+  "StrainDataPoints": [
+    "PostponeDeeperQuestions",
+    "HesitateLetGo",
+    "ThinkNextNoAction",
+    "OldDoesntFitNewUnclear",
+    "PressureFigureOut"
+  ],
+  "Thresholds": {
+    "StrainChallengingMin": 5
+  },
+  "TieBreak": {
+    "strategy": "prefer_later_phase"
+  }
+}

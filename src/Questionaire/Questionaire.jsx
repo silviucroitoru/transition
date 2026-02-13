@@ -1,23 +1,28 @@
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockData } from './mockData';
 import mixpanel from "mixpanel-browser";
 import Page from "./components/Page.jsx";
 import './Questionaire.css'
 import HeaderArea from "./components/HeaderArea.jsx";
-import { fetchQuestionnaireByLanguage, saveSubmission } from '../data/questionnaireApi';
+import { fetchQuestionnaireByLanguage, saveSubmission, saveTransitionResult } from '../data/questionnaireApi';
+import { computeTransitionResult } from '../data/scoringEngine';
+import scoringMap from '../data/TransitionScoringMap.json';
+
 export default function Questionaire() {
   function getLanguageFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get('language');
   }
   const [questionnaire, setQuestionnaire] = useState(null);
-  const [language] = useState(getLanguageFromURL() ?? 'RO');
+  const [loadError, setLoadError] = useState(null);
+  const [language] = useState(getLanguageFromURL() ?? 'EN');
   const [userName, setUserName] = useState(localStorage.getItem('userName'));
   const [submissionId, setSubmissionId] = useState();
   const [responses, setResponses] = useState({});
+  const responsesRef = useRef({});
   const [progressPages, setProgressPages] = useState([1]);
   const [currentPage, setCurrentPage] = useState(null);
+  const [saveError, setSaveError] = useState(null);
   const topicPageRef = useRef(null);
   const headerRef = useRef(null);
   const originalHeight = useRef(0);
@@ -34,23 +39,27 @@ export default function Questionaire() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    localStorage.setItem("language", getLanguageFromURL()?.toLowerCase() ?? 'ro');
+    const fromUrl = getLanguageFromURL();
+    const toSet = fromUrl?.toLowerCase() ?? 'en';
+    localStorage.setItem("language", toSet);
     if (topicPageRef.current) {
       originalHeight.current = topicPageRef.current.clientHeight;
     }
     async function loadQuestionnaire() {
+      setLoadError(null);
       try {
-        // Prefer Supabase; fall back to bundled mockData if it fails.
         const content = await fetchQuestionnaireByLanguage(language);
-        setQuestionnaire(content);
-        setCurrentPage(content.info[0]);
+        const raw = content.info || [];
+        const normalized = raw.map((p) => ({ ...p, position: Number(p.position) }));
+        const sorted = {
+          ...content,
+          info: normalized.sort((a, b) => a.position - b.position),
+        };
+        setQuestionnaire(sorted);
+        setCurrentPage(sorted.info[0]);
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Falling back to local mockData.questionnaire due to error:', error);
-        setSubmissionId(mockData.SubmissionID);
-        setQuestionnaire(mockData.questionnaire);
-        setCurrentPage(mockData.questionnaire.info[0]);
-        localStorage.setItem('SubmissionID', mockData.SubmissionID);
+        console.error('Failed to load questionnaire:', error);
+        setLoadError(error);
       }
     }
 
@@ -66,52 +75,109 @@ export default function Questionaire() {
       localStorage.setItem('bloomEmail', a)
     }
     if (type !== "intro" && type !== "media" && type !== "email") {
-      setResponses(prev => ({
-        ...prev,
-        [dataPointName]: a,
-      }));
+      const nextResponses = { ...responsesRef.current, [dataPointName]: a };
+      responsesRef.current = nextResponses;
+      setResponses(nextResponses);
     }
-    if(type !== "email"){
-      setProgressPages([...progressPages, pageNo])
-      setCurrentPage(questionnaire.info?.find((page) => page.position === pageNo));
+    if (type !== "email") {
+      const nextPageNo = Number(pageNo);
+      const nextPage = questionnaire.info?.find((page) => page.position === nextPageNo);
+      if (nextPage) {
+        setProgressPages([...progressPages, nextPageNo]);
+        setCurrentPage(nextPage);
+      }
     }
-    mixpanel.track(`[Page ${pageNo} View] Questionnaire`, {source: 'Questionnaire'})
+    mixpanel.track(`[Page ${pageNo} View] Questionnaire`, { source: 'Questionnaire' });
     if (type === "email") {
-      const updatedResponses = {
-        ...responses,
-        [dataPointName]: a,
-      };
-
+      setSaveError(null);
+      const allResponses = { ...responsesRef.current, [dataPointName]: a };
+      const scoreResult = computeTransitionResult(allResponses, scoringMap);
+      try {
+        localStorage.setItem('transitionScoreResult', JSON.stringify(scoreResult));
+      } catch (e) {
+        console.warn('Could not store score result in localStorage', e);
+      }
+      if (allResponses.TransitionType != null) {
+        try {
+          localStorage.setItem('transitionType', allResponses.TransitionType);
+        } catch (e) {
+          console.warn('Could not store TransitionType in localStorage', e);
+        }
+      }
       try {
         const newSubmissionId = await saveSubmission({
           language,
-          responses: updatedResponses,
+          responses: allResponses,
           email: a,
         });
         setSubmissionId(newSubmissionId);
         localStorage.setItem('SubmissionID', newSubmissionId);
+        try {
+          await saveTransitionResult(newSubmissionId, scoreResult);
+        } catch (err) {
+          console.warn('Failed to persist transition result; using localStorage only', err);
+        }
+        navigate('/dashboard');
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Failed to save submission to Supabase', error);
+        setSaveError(error);
       }
-
-      navigate('/dashboard');
     }
   }
 
   const back = () => {
-    const pageNo = questionnaire.info.find(page => page.position === progressPages[progressPages.length - 2]);
-    setCurrentPage(questionnaire.info.find(page => page.position === progressPages[progressPages.length - 2]));
+    const prevPosition = Number(progressPages[progressPages.length - 2]);
+    setCurrentPage(questionnaire.info.find(page => page.position === prevPosition));
     setProgressPages(prevItems => prevItems.slice(0, -1));
-    mixpanel.track(`[Page ${pageNo} View] Questionnaire`, {source: 'Questionnaire'})
+    mixpanel.track(`[Page ${prevPosition} View] Questionnaire`, {source: 'Questionnaire'})
   }
-  if( !questionnaire){
-    return (<h1></h1>)
+  if (loadError) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center', maxWidth: '28rem', margin: '0 auto' }}>
+        <p style={{ marginBottom: '1rem' }}>Unable to load the questionnaire. Please check your connection and try again.</p>
+        <button
+          type="button"
+          className="button button--primary"
+          onClick={() => {
+            setLoadError(null);
+            setQuestionnaire(null);
+            fetchQuestionnaireByLanguage(language)
+              .then((content) => {
+                const raw = content.info || [];
+                const normalized = raw.map((p) => ({ ...p, position: Number(p.position) }));
+                const sorted = { ...content, info: normalized.sort((a, b) => a.position - b.position) };
+                setQuestionnaire(sorted);
+                setCurrentPage(sorted.info[0]);
+              })
+              .catch((err) => {
+                console.error('Failed to load questionnaire:', err);
+                setLoadError(err);
+              });
+          }}
+        >
+          Try again
+        </button>
+      </div>
+    );
+  }
+  if (!questionnaire) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        Loading questionnaire…
+      </div>
+    );
+  }
+  if (!currentPage) {
+    return (
+      <div style={{ padding: '2rem', textAlign: 'center' }}>
+        No question to display. Check questionnaire data.
+      </div>
+    );
   }
   const dynamicHeight = currentPage.position === 1 ? "100dvh" : `calc(100dvh + ${extraHeight}px)`;
 
   return (
-    <div className={`${currentPage.position === 1 ? 'active' : ''} no-scroll`} style={{height: dynamicHeight}}>
+    <div className={`${currentPage.position === 1 ? 'active' : ''} no-scroll`} style={{ height: dynamicHeight }}>
       <div className="topic-header" ref={headerRef}>
         <HeaderArea
           currentPage={currentPage}
@@ -119,6 +185,13 @@ export default function Questionaire() {
           qLength={questionnaire.info.length}
         />
       </div>
+      {saveError && currentPage?.QuestionType === 'email' && (
+        <div style={{ padding: '0.75rem 1rem', margin: '0 1rem', background: '#fee', color: '#c00', borderRadius: 8 }}>
+          <p style={{ margin: 0 }}>Your answers could not be saved. Please check your connection and try again.</p>
+          {saveError?.message && <p style={{ margin: '0.25rem 0 0', fontSize: '0.875rem' }}>{saveError.message}</p>}
+          <button type="button" className="button button--primary" style={{ marginTop: '0.5rem' }} onClick={() => setSaveError(null)}>Dismiss</button>
+        </div>
+      )}
       <div className="page-narrow" id="topic-page-container" ref={topicPageRef}>
         <div className="page-container">
           {

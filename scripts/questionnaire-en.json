@@ -1,0 +1,214 @@
+{
+  "info": [
+    {
+      "QuestionType": "intro",
+      "settings": {
+        "RichText": "<h1>Transition Check</h1><p>This questionnaire helps you identify which phase of transition you are in right now and how supported that phase feels.</p><p>Answer honestly. There are no right or wrong answers.</p><p>Let's begin.</p>"
+      },
+      "DataPointName": "WelcomeMessage",
+      "position": 1
+    },
+    {
+      "QuestionType": "first_name",
+      "settings": {
+        "QuestionHelper": "Please enter your first name.",
+        "QuestionText": "What is your first name?"
+      },
+      "DataPointName": "FirstName",
+      "position": 2
+    },
+    {
+      "QuestionType": "single_option",
+      "settings": {
+        "QuestionHelper": "Choose the area that best describes your current experience.",
+        "QuestionText": "What type of transition are you currently navigating?",
+        "options": [
+          { "OptionText": "Personal identity or self-discovery", "OptionValue": 1 },
+          { "OptionText": "Career or leadership", "OptionValue": 2 },
+          { "OptionText": "Relationship or family", "OptionValue": 3 },
+          { "OptionText": "Health or wellbeing", "OptionValue": 4 },
+          { "OptionText": "Life stage (e.g., retirement, relocation)", "OptionValue": 5 }
+        ]
+      },
+      "DataPointName": "TransitionType",
+      "position": 3
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I feel responsible for holding things together, even when it's heavy.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "This doesn't feel like my role. I can ask for help and things still move." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I often carry the load, especially in busy weeks, but it's not constant." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I'm the one who keeps things running for others. If I stop, it feels like everything could fall apart." }
+        ]
+      },
+      "DataPointName": "HoldingThingsTogether",
+      "position": 4
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "From the outside, my life looks stable, but internally it feels effortful.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "My inside experience mostly matches what people see. It feels steady, not forced." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I look fine from the outside, but some days take more effort than I admit." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "People see me as capable, but day to day feels like pushing through on willpower." }
+        ]
+      },
+      "DataPointName": "LooksStableFeelsEffortful",
+      "position": 5
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I postpone dealing with deeper questions because there's no space right now.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "Even when life is busy, I make space to face what matters." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I notice the big questions, but I often delay them until things calm down." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I keep telling myself: after the next deadline, after the next phase, after I have more capacity." }
+        ]
+      },
+      "DataPointName": "PostponeDeeperQuestions",
+      "position": 6
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "Something in my life feels finished, even if I haven't named it openly.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "Nothing feels like it's ending. I feel aligned with my current direction." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "Part of me senses a chapter is closing, but it's not fully clear." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "A role, relationship, direction, or identity feels done, even if nothing is official yet." }
+        ]
+      },
+      "DataPointName": "FeelsFinished",
+      "position": 7
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I feel grief, relief, or both about a chapter that's closing.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "I don't feel emotionally tied to something ending right now." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I have moments of sadness or relief, but it comes and goes." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "Part of me is grieving, and another part feels lighter or more honest." }
+        ]
+      },
+      "DataPointName": "GriefReliefBoth",
+      "position": 8
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I hesitate to let go because I don't know what comes next.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "Uncertainty doesn't stop me. I can release what's done even without a full plan." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I can let go in small ways, but big endings take me time." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I know what I'm leaving, but I don't trust what comes after, so I keep one foot in the old." }
+        ]
+      },
+      "DataPointName": "HesitateLetGo",
+      "position": 9
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I think a lot about what's next, but struggle to take action.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "When I decide something, I can take the next step without getting stuck in analysis." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I sometimes overthink, but I can still move when it matters." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I plan, journal, research, talk it through, but I still don't do the next step." }
+        ]
+      },
+      "DataPointName": "ThinkNextNoAction",
+      "position": 10
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "Old ways of being don't fit anymore, but new ones aren't clear.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "I feel clear on who I am and how I want to move forward." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "Some parts of my old way don't fit, but I still have anchors." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I can't go back to the old way, but the new way isn't formed yet, so everything feels vague or unstable." }
+        ]
+      },
+      "DataPointName": "OldDoesntFitNewUnclear",
+      "position": 11
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I feel pressure to figure things out, which makes me more stuck.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "I can sit with uncertainty without making it mean something is wrong." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I feel pressure sometimes, but I can still ground myself." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I compare myself, feel behind, or think I should already have clarity, and it freezes me." }
+        ]
+      },
+      "DataPointName": "PressureFigureOut",
+      "position": 12
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I feel ready to move forward, but need structure to do it well.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "I already have enough structure, or I prefer to move intuitively without a plan." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I can move forward, but structure helps me stay consistent." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I'm ready, but I need a clear container, plan, or accountability so I don't spiral or stall." }
+        ]
+      },
+      "DataPointName": "ReadyNeedStructure",
+      "position": 13
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I have energy for change, but I don't want to rush or force it.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "If I decide something, I'm comfortable moving fast and adjusting as I go." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I want steady progress, but I can feel tempted to push when I'm impatient." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I'm done with forcing. I want progress that doesn't cost my nervous system." }
+        ]
+      },
+      "DataPointName": "EnergyNoRush",
+      "position": 14
+    },
+    {
+      "QuestionType": "single_option_with_helper",
+      "settings": {
+        "QuestionHelper": "Choose the option that best matches your experience right now.",
+        "QuestionText": "I want to build something new in a grounded, intentional way.",
+        "options": [
+          { "OptionText": "Not true for me", "OptionValue": 0, "OptionHelper": "I'm not focused on building something new right now, or it's not a priority." },
+          { "OptionText": "Somewhat true", "OptionValue": 1, "OptionHelper": "I'm exploring what's next, but I'm still testing what feels right." },
+          { "OptionText": "Very true", "OptionValue": 2, "OptionHelper": "I want a new rhythm, new standards, or a new direction, and I want it to actually hold in real life." }
+        ]
+      },
+      "DataPointName": "BuildGrounded",
+      "position": 15
+    },
+    {
+      "QuestionType": "email",
+      "settings": {
+        "QuestionHelper": "Please enter a valid email address so you can receive your result.",
+        "QuestionText": "What is your email address?"
+      },
+      "DataPointName": "Email",
+      "position": 16
+    }
+  ]
+}

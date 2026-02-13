@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import '../styles/customForm.css'
 import ActionArea from "./ActionArea.jsx";
-import { useTranslate } from "@tolgee/react";
-import {FormattedMessage} from "react-intl";
+import { FormattedMessage } from "react-intl";
 
 export default function CustomForm({
   question,
@@ -17,7 +16,6 @@ export default function CustomForm({
   dataPointName,
   userName,
 }){
-  const { t } = useTranslate();
   const [focused, setFocused] = useState(false);
   const [value, setValue] = useState("");
   const [fullValue, setFullValue] = useState("");

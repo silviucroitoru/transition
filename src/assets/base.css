@@ -1,12 +1,22 @@
+/* ============================================
+   Theme: change these to rebrand colors
+   ============================================ */
 :root {
-  --main-blue: #3D497A;
-  --main-blue-hover: #2C355A;
-  --main-grey: #949494;
+  /* Primary */
+  --main-blue: #1F1D50;
+  --main-blue-hover: #312E69;
+  --main-grey: #626184;
   --main-pink: #FF4589;
+  --main-text-dark: #626184;
+  /* Secondary */
   --secondary-gray: #EAECF0;
   --secondary-blue-80: #646D95;
   --secondary-blue-20: #D8DBE4;
   --secondary-blue: #f5f6f8;
+  /* Greens (used in steps, sidebar, intro) */
+  --primary-green: #1E3723;
+  --primary-dark-green: #1E3723;
+  --tint-dark-green-70: #2d5a3a;
   --tint-stone-50: #D8E1DF;
 }
 @font-face {

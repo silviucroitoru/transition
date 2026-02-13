@@ -1,5 +1,5 @@
 {
-  "name": "amplify-vite-react-template",
+  "name": "transition-questionnaire",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,13 +7,12 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext jsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "seed": "node scripts/seed-questionnaire.mjs",
+    "test:save-result": "node scripts/test-save-result.mjs"
   },
   "dependencies": {
-    "@aws-amplify/api": "^6.0.54",
-    "@aws-amplify/ui-react": "^6.2.0",
-    "@tolgee/react": "^6.2.5",
-    "aws-amplify": "^6.5.2",
+    "@supabase/supabase-js": "^2.95.3",
     "mixpanel-browser": "^2.64.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -22,16 +21,12 @@
     "swiper": "^11.1.15"
   },
   "devDependencies": {
-    "@aws-amplify/backend": "^1.1.1",
-    "@aws-amplify/backend-cli": "^1.2.4",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
     "@typescript-eslint/parser": "^7.2.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "aws-cdk": "^2.138.0",
-    "aws-cdk-lib": "^2.138.0",
-    "constructs": "^10.3.0",
+    "dotenv": "^17.2.4",
     "esbuild": "^0.20.2",
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
@@ -39,6 +34,5 @@
     "tsx": "^4.7.2",
     "typescript": "^5.4.5",
     "vite": "^5.2.0"
-  },
-  "proxy": "https://vl23sex5f0.execute-api.eu-north-1.amazonaws.com"
+  }
 }

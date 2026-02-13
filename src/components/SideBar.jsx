@@ -1,14 +1,16 @@
-import "./styles/sidebar.css"
-import { FormattedMessage } from "react-intl";
+import "./styles/sidebar.css";
+import { useIntl } from "react-intl";
 import mixpanel from "mixpanel-browser";
-import { useTranslate } from "@tolgee/react";
+import { brand } from "../config/brand";
 
 export default function SideBar({scoreSummary}) {
-  const { t } = useTranslate();
+  const intl = useIntl();
   return (
     <div className="sidebar">
       <div className="logo">
-        <img src="https://evrbloom.ro/cdn/shop/files/evrbloom_logo.svg?v=1742998418&width=100" alt="EvrBloom" />
+        <a href={brand.logo.link}>
+          <img src={brand.logo.src} alt={brand.logo.alt} />
+        </a>
       </div>
       <div className="dashboardMenu">
         {scoreSummary.stageTitle && (
@@ -57,8 +59,7 @@ export default function SideBar({scoreSummary}) {
                   document.getElementById('whats_next').scrollIntoView({behavior: "smooth"})
                 }}
         >
-          <span>{t("whats_next_sidebar_title")}</span>
-          {/*<FormattedMessage id="whats_next_sidebar_title"/>*/}
+          <span>{intl.formatMessage({ id: "whats_next_sidebar_title" })}</span>
         </button>
         <button className="menuLink"
                 onClick={() => {
@@ -66,8 +67,7 @@ export default function SideBar({scoreSummary}) {
                   document.getElementById('book_call').scrollIntoView({behavior: "smooth"})
                 }}
         >
-          <span>{t("book_call_sidebar_title")}</span>
-          {/*<FormattedMessage id="book_call_sidebar_title"/>*/}
+          <span>{intl.formatMessage({ id: "book_call_sidebar_title" })}</span>
         </button>
       </div>
     </div>
