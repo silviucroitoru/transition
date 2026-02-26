@@ -22,6 +22,8 @@ export default function Questionaire() {
   const responsesRef = useRef({});
   const [progressPages, setProgressPages] = useState([1]);
   const [currentPage, setCurrentPage] = useState(null);
+  const [previousPagePos, setPreviousPagePos] = useState(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   const [saveError, setSaveError] = useState(null);
   const topicPageRef = useRef(null);
   const headerRef = useRef(null);
@@ -98,8 +100,14 @@ export default function Questionaire() {
       const nextPageNo = Number(pageNo);
       const nextPage = questionnaire.info?.find((page) => page.position === nextPageNo);
       if (nextPage) {
+        setPreviousPagePos(currentPage?.position ?? null);
+        setIsTransitioning(true);
         setProgressPages([...progressPages, nextPageNo]);
         setCurrentPage(nextPage);
+        setTimeout(() => {
+          setPreviousPagePos(null);
+          setIsTransitioning(false);
+        }, 350);
       }
     }
     mixpanel.track(`[Page ${pageNo} View] Questionnaire`, { source: 'Questionnaire' });
@@ -142,9 +150,15 @@ export default function Questionaire() {
 
   const back = () => {
     const prevPosition = Number(progressPages[progressPages.length - 2]);
+    setPreviousPagePos(currentPage?.position ?? null);
+    setIsTransitioning(true);
     setCurrentPage(questionnaire.info.find(page => page.position === prevPosition));
     setProgressPages(prevItems => prevItems.slice(0, -1));
     mixpanel.track(`[Page ${prevPosition} View] Questionnaire`, {source: 'Questionnaire'})
+    setTimeout(() => {
+      setPreviousPagePos(null);
+      setIsTransitioning(false);
+    }, 350);
   }
   if (loadError) {
     return (
@@ -211,8 +225,13 @@ export default function Questionaire() {
         <div className="page-container">
           {
             questionnaire?.info.map((page) => {
+              const isCurrent = currentPage.position === page.position;
+              const isPrevious = previousPagePos === page.position;
+              const pageClass = isCurrent ? 'active' : isPrevious ? 'inactive' : 'd-none';
               return (
-                <div key={page.position} className={`page page-width ${currentPage.position === page.position ? 'active' : 'd-none'}`}
+                <div key={page.position}
+                     className={`page page-width ${pageClass}`}
+                     style={isTransitioning ? { pointerEvents: 'none' } : undefined}
                      id={`page${page.position}`}>
                   <Page
                     page={page}
