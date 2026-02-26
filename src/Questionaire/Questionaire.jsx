@@ -227,11 +227,11 @@ export default function Questionaire() {
             questionnaire?.info.map((page) => {
               const isCurrent = currentPage.position === page.position;
               const isPrevious = previousPagePos === page.position;
-              const pageClass = isCurrent ? 'active' : isPrevious ? 'inactive' : 'd-none';
+              const pageClass = isCurrent ? 'active' : isPrevious ? 'inactive' : '';
               return (
                 <div key={page.position}
-                     className={`page page-width ${pageClass}`}
-                     style={isTransitioning ? { pointerEvents: 'none' } : undefined}
+                     className={`page page-width ${pageClass}`.trim()}
+                     style={isTransitioning && isCurrent ? { pointerEvents: 'none' } : undefined}
                      id={`page${page.position}`}>
                   <Page
                     page={page}

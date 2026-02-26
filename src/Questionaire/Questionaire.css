@@ -75,28 +75,28 @@
   width: calc(100% - 64px);
   height: calc(100dvh - 102px);
   opacity: 0;
+  visibility: hidden;
   transition: left 400ms ease-out, opacity 400ms ease-out;
   margin-top: 0;
   z-index: 1;
   padding: 0 32px;
-}
-.page.d-none{
-  display: none;
+  pointer-events: none;
 }
 .page.inactive{
   left: -500%;
   opacity: 0;
+  visibility: visible;
   transition: left 0s linear, opacity 400ms ease-out;
   z-index: 1;
-  display: block;
   pointer-events: none;
 }
 .page.active{
   left: 0;
   opacity: 1;
+  visibility: visible;
   transition: left 400ms ease-out, opacity 400ms ease-out;
   z-index: 2;
-  display: block;
+  pointer-events: auto;
 }
 .action-area{
   display: flex;
