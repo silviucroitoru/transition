@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { brand } from '../config/brand';
 import './privacy-policy.css';
@@ -7,9 +6,9 @@ export default function PrivacyPolicy() {
   return (
     <div className="privacy-policy-page">
       <div className="topic-header">
-        <Link to="/questionnaire">
+        <a href={brand.logo.link}>
           <img src={brand.logo.src} alt={brand.logo.alt} className="logo" />
-        </Link>
+        </a>
       </div>
       <div className="privacy-policy-content">
         <h1 className="privacy-policy-title">
@@ -53,12 +52,6 @@ export default function PrivacyPolicy() {
           <h2><FormattedMessage id="privacy_contact_heading" /></h2>
           <p><FormattedMessage id="privacy_contact" /></p>
         </section>
-
-        <div className="privacy-policy-back">
-          <Link to="/questionnaire" className="button button--secondary">
-            <FormattedMessage id="privacy_back_to_questionnaire" />
-          </Link>
-        </div>
       </div>
     </div>
   );

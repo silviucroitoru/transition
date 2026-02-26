@@ -62,16 +62,3 @@
   margin: 0;
   color: var(--main-text-dark);
 }
-
-.privacy-policy-back {
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--secondary-blue-20);
-}
-
-.privacy-policy-back .button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-}

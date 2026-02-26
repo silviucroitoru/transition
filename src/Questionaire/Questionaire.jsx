@@ -36,6 +36,21 @@ export default function Questionaire() {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Prevent Safari mobile from showing a "pre-selected" option on the next screen
+  // (same index as the one just tapped) by clearing focus when the page changes.
+  useEffect(() => {
+    if (currentPage?.position == null) return;
+    const t = requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (document.activeElement && document.activeElement !== document.body) {
+          document.activeElement.blur();
+        }
+      });
+    });
+    return () => cancelAnimationFrame(t);
+  }, [currentPage?.position]);
+
   const navigate = useNavigate();
 
   useEffect(() => {

@@ -76,7 +76,10 @@ export default function SingleOption({
                   className={`option ${option.image_url ? 'with-image' : ''} ${type === 'single_option_with_helper' ? 'option-with-helper' : ''}`}
                   role="button"
                   tabIndex={0}
-                  onClick={() => next(nextPage, dataPointId, dataPointName, val, type)}
+                  onClick={(e) => {
+                    e.currentTarget.blur();
+                    next(nextPage, dataPointId, dataPointName, val, type);
+                  }}
                   key={option.OptionText ?? option.OptionValue ?? index}
                   data-question={id}
                 >

@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 
 export default function ActionArea({currentPage, next, back, dataPointId, dataPointName, a, isAvailable, type, language}) {
@@ -12,9 +11,9 @@ export default function ActionArea({currentPage, next, back, dataPointId, dataPo
               id="terms_agreement"
               values={{
                 privacyPolicy: (
-                  <Link to="/privacy-policy">
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer">
                     <FormattedMessage id="privacy_policy" />
-                  </Link>
+                  </a>
                 ),
               }}
             />
