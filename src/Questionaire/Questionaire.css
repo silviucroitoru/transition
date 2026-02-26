@@ -121,6 +121,9 @@
     width: calc(100% - 48px);
     max-width: 100%;
   }
+  .action-area{
+    padding-bottom: 16px;
+  }
   .action-area.width-disclaimer{
     flex-direction: column-reverse;
     row-gap: 16px;
