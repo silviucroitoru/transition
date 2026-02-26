@@ -76,7 +76,7 @@
   height: calc(100dvh - 102px);
   opacity: 0;
   visibility: hidden;
-  transition: left 280ms ease-out, opacity 280ms ease-out;
+  transition: left 200ms ease-out, opacity 200ms ease-out;
   margin-top: 0;
   z-index: 1;
   padding: 0 32px;
@@ -86,7 +86,7 @@
   left: -500%;
   opacity: 0;
   visibility: visible;
-  transition: left 0s linear, opacity 280ms ease-out;
+  transition: left 0s linear, opacity 200ms ease-out;
   z-index: 1;
   pointer-events: none;
 }
@@ -94,7 +94,7 @@
   left: 0;
   opacity: 1;
   visibility: visible;
-  transition: left 280ms ease-out, opacity 280ms ease-out;
+  transition: left 200ms ease-out, opacity 200ms ease-out;
   z-index: 2;
   pointer-events: auto;
 }
