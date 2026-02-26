@@ -10,7 +10,7 @@ import { getTransitionResult } from "../data/questionnaireApi";
 
 const defaultScoreJson = {
   transitionScore: {
-    scoretitle: "Transition Score",
+    scoretitle: "Current State",
     scorename: "Your experience",
     score: 0,
     description: "Complete the questionnaire to see your results.",
@@ -24,7 +24,7 @@ const defaultScoreJson = {
     stageDeterminationExplanation: ""
   },
   keySymptoms: {
-    symptomstitle: "Symptoms",
+    symptomstitle: "The Shift",
     mostImpactful: [],
     moderateImpact: []
   }
@@ -37,7 +37,7 @@ function buildScoreJsonFromResult(scoreResult, intl) {
     : Math.min(100, 50 + (scoreResult.strainScore || 0) * 5);
   return {
     transitionScore: {
-      scoretitle: "Transition Score",
+      scoretitle: "Current State",
       scorename: scoreResult.experienceState,
       score,
       description: scoreResult.experienceState === "Challenging"
@@ -54,7 +54,7 @@ function buildScoreJsonFromResult(scoreResult, intl) {
       stageDeterminationExplanation: ""
     },
     keySymptoms: {
-      symptomstitle: "Symptoms",
+      symptomstitle: "The Shift",
       mostImpactful: [],
       moderateImpact: []
     }

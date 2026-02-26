@@ -11,7 +11,7 @@
 }
 .transition-stage .transition-stage-prehead{
   font-family: "SofiaPro-Medium";
-  color: var(--main-grey);
+  color: var(--third-grey);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -30,7 +30,7 @@
   max-width: 640px;
 }
 .transition-stage-main-content{
-  margin: 0 0 32px 0;
+  margin: 0 0 48px 0;
   display: flex;
   column-gap: 64px;
   align-items: flex-start;
@@ -126,7 +126,7 @@
 }
 .transition-score-container .transition-stage-text .transition-stage-prehead{
   font-family: "SofiaPro-Medium";
-  color: var(--main-grey);
+  color: var(--third-grey);
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -254,7 +254,7 @@
   text-underline-position: from-font;
 }
 .transition-stage-explanation{
-  color: var(--main-grey);
+  color: var(--third-grey);
   font-family: "SofiaPro-Regular";
   font-size: 12px;
   font-style: normal;

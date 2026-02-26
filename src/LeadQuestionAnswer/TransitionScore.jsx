@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import ScoreCircle from "./ScoreCircle.jsx";
 import "./transition-score.css";
 import 'swiper/css';
 import { FormattedMessage, useIntl } from "react-intl";
@@ -55,8 +54,11 @@ export default function TransitionScore({scoreJson, scoreSummary}) {
     const scaleContainer = document.getElementById("scale_container");
     if (!scaleContainer) return;
     const scaleContainerWidth = scaleContainer.offsetWidth;
-    setLineWidth((scaleContainerWidth - 200) / 3)
-    setArrowPosition(64 + index * ((scaleContainerWidth - 200) / 3) + 20*index)
+    const w = (scaleContainerWidth - 200) / 3;
+    setLineWidth(w);
+    if (index >= 0) {
+      setArrowPosition(64 + index * w + 20 * index);
+    }
     if (bookCallSection) {
       const windowHeight = window.innerHeight;
       const sectionHeight = bookCallSection.offsetHeight;
@@ -106,6 +108,7 @@ export default function TransitionScore({scoreJson, scoreSummary}) {
   } else if(index === 3){
     stageMoreLink = intl.formatMessage({ id: 'postmenopause_link' })
   }
+  const segmentMs = index >= 0 ? Math.round(((index + 1) * 500 + 250) / (index + 1)) : 250;
 
   return (
     <div className="results">
@@ -140,25 +143,25 @@ export default function TransitionScore({scoreJson, scoreSummary}) {
               </svg>
             </div>
             <div className="line-small">
-              <span className={index >= 0 ? 'active' : ''}></span>
+              <span className={index >= 0 ? 'active' : ''} style={{transitionDuration: `${segmentMs}ms`}}></span>
             </div>
             <div className={`item item1 ${index >= 0 ? 'active' : ''}`} style={{left: '64px', textIndent: -(stage0Width)}}>
               <span id="stage0">{stages[0]}</span>
             </div>
             <div className="line-big" style={{left: '20px', width: `${lineWidth}px`}}>
-              <span className={index > 0 ? 'active' : ''} style={{transitionDelay: "250ms"}}></span>
+              <span className={index > 0 ? 'active' : ''} style={{transitionDelay: `${segmentMs}ms`, transitionDuration: `${segmentMs}ms`}}></span>
             </div>
             <div className={`item item2 ${index > 0 ? 'active' : ''}`}  style={{left: `${lineWidth + 84}px`, textIndent: -(stage1Width)}}>
               <span id="stage1">{stages[1]}</span>
             </div>
             <div className="line-big" style={{left: `40px`, width: `${lineWidth}px`}}>
-              <span className={index > 1 ? 'active' : ''} style={{transitionDelay: "750ms"}}></span>
+              <span className={index > 1 ? 'active' : ''} style={{transitionDelay: `${2 * segmentMs}ms`, transitionDuration: `${segmentMs}ms`}}></span>
             </div>
             <div className={`item item3 ${index > 1 ? 'active' : ''}`}  style={{left: `${lineWidth*2 + 104}px`, textIndent: -(stage2Width)}}>
               <span id="stage2">{stages[2]}</span>
             </div>
             <div className="line-big" style={{left: `60px`, width: `${lineWidth}px`}}>
-              <span className={index > 2 ? 'active' : ''} style={{transitionDelay: "1250ms"}}></span>
+              <span className={index > 2 ? 'active' : ''} style={{transitionDelay: `${3 * segmentMs}ms`, transitionDuration: `${segmentMs}ms`}}></span>
             </div>
             <div className={`item item4 ${index > 2 ? 'active' : ''}`}  style={{left: `${lineWidth*3 + 124}px`, textIndent: -(stage3Width)}}>
               <span id="stage3">{stages[3]}</span>
@@ -188,60 +191,12 @@ export default function TransitionScore({scoreJson, scoreSummary}) {
                    dangerouslySetInnerHTML={{__html: htmlDescriptionStage}}/>
             </div>
           </div>
-          <div className="transition-stage-action-buttons">
-            <a
-              href={intl.formatMessage({ id: "become_member_link" })}
-              target="_blank"
-              className="button whatsapp"
-              onClick={() => trackEvent(`Dashboard-Stage Click on ${intl.formatMessage({ id: 'become_member' })} button`, 'Transition stage section')}
-            >
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clipPath="url(#clip0_1678_1939)">
-                  <path fillRule="evenodd" clipRule="evenodd"
-                        d="M17.0859 2.90417C15.2061 1.03232 12.7059 0.000949696 10.042 0C4.55283 0 0.08547 4.44221 0.08356 9.90249C0.082605 11.648 0.54147 13.3518 1.41288 14.8533L0 19.9854L5.27909 18.6083C6.7335 19.3976 8.37128 19.813 10.0377 19.8135H10.042C15.5302 19.8135 19.9981 15.3708 20 9.91055C20.0009 7.26425 18.9662 4.7765 17.0859 2.90465V2.90417ZM10.042 18.1411H10.0387C8.55367 18.1407 7.09689 17.7436 5.82583 16.9939L5.52357 16.8154L2.39078 17.6325L3.22686 14.5949L3.03013 14.2834C2.20169 12.9729 1.76383 11.4581 1.76479 9.90298C1.7667 5.36484 5.47963 1.67241 10.0454 1.67241C12.2561 1.67336 14.3342 2.53047 15.8969 4.08655C17.4598 5.64216 18.3197 7.71061 18.3188 9.90961C18.3168 14.4482 14.6039 18.1407 10.042 18.1407V18.1411ZM14.5819 11.9766C14.3332 11.8527 13.1099 11.2544 12.8816 11.1718C12.6534 11.0891 12.4877 11.0478 12.322 11.2957C12.1563 11.5436 11.6793 12.1011 11.5342 12.2658C11.389 12.4311 11.2438 12.4515 10.9951 12.3275C10.7463 12.2036 9.94461 11.9424 8.99395 11.0996C8.25433 10.4433 7.75483 9.63326 7.60972 9.38536C7.46456 9.13751 7.59444 9.00359 7.71856 8.88061C7.83028 8.7695 7.96733 8.59144 8.09194 8.44707C8.21661 8.30271 8.25767 8.19923 8.34072 8.03442C8.42383 7.86917 8.38228 7.72486 8.32022 7.60088C8.25811 7.47696 7.76061 6.25895 7.55289 5.7637C7.35089 5.28127 7.14561 5.3468 6.99328 5.33872C6.84811 5.3316 6.68244 5.33018 6.51628 5.33018C6.35011 5.33018 6.08078 5.39191 5.85256 5.63978C5.62433 5.88762 4.98162 6.48641 4.98162 7.70392C4.98162 8.92144 5.87311 10.0986 5.99772 10.2639C6.12233 10.4291 7.75244 12.9282 10.2483 14.0004C10.8418 14.2554 11.3054 14.4078 11.6669 14.5218C12.2628 14.7103 12.8052 14.6838 13.234 14.6201C13.712 14.5489 14.7061 14.0213 14.9133 13.4434C15.1206 12.8655 15.1206 12.3698 15.0585 12.2667C14.9964 12.1637 14.8303 12.1015 14.5815 11.9776L14.5819 11.9766Z"
-                        fill="white"/>
-                </g>
-                <defs>
-                  <clipPath id="clip0_1678_1939">
-                    <rect width="20" height="20" fill="white"/>
-                  </clipPath>
-                </defs>
-              </svg>
-              <span>{intl.formatMessage({ id: 'become_member' })}</span>
-            </a>
-            {
-              index > 0 && (
-                <a
-                  href={stageMoreLink}
-                  target="_blank"
-                  className="button button--secondary more-link"
-                  onClick={() => trackEvent(`Dashboard-Stage Click on ${intl.formatMessage({ id: 'learn_about_stage' })} button`, 'Transition stage section')}
-                >
-                  <span>{intl.formatMessage({ id: 'learn_about_stage' })}</span>
-                  <svg width="16" height="16" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M4.66602 9.99996H16.3327M16.3327 9.99996L10.4993 4.16663M16.3327 9.99996L10.4993 15.8333"
-                      stroke="#3D497A"
-                      strokeWidth="1.66667"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </a>
-              )
-            }
-          </div>
           <div className="transition-stage-explanation"
                dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: "menopause_stage_determination" })}}
           />
         </div>
         {index > -1 && (
           <div className="transition-score" id={scoreJson?.transitionScore?.scoretitle ?? 'transition-score'}>
-            <ScoreCircle
-              score={scoreJson?.transitionScore?.score ?? 0}
-              size={128}
-              strokeWidth={8}
-            />
             <div className="transition-stage-main-content">
               <div className="transition-stage-text">
                 <div className="transition-stage-prehead">
@@ -426,7 +381,7 @@ export default function TransitionScore({scoreJson, scoreSummary}) {
                       <path d="M22 12H18L15 21L9 3L6 12H2" stroke="#3D497A" strokeWidth="2" strokeLinecap="round"
                             strokeLinejoin="round"/>
                     </svg>
-                    {intl.formatMessage({ id: `${s.dataPointName.replaceAll(' ', '')}_name` })}/>
+                    {intl.formatMessage({ id: `${s.dataPointName.replaceAll(' ', '')}_name` })}
                   </div>
                   <div className="description"
                        dangerouslySetInnerHTML={{__html: intl.formatMessage({ id: `${s.dataPointName?.replaceAll(" ", "")}_description` })}}/>
