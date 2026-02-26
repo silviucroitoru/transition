@@ -75,7 +75,7 @@
   width: calc(100% - 64px);
   height: calc(100dvh - 102px);
   opacity: 0;
-  transition: left 200ms linear, opacity 300ms linear;
+  transition: left 400ms ease-out, opacity 400ms ease-out;
   margin-top: 0;
   z-index: 1;
   padding: 0 32px;
@@ -86,7 +86,7 @@
 .page.inactive{
   left: -500%;
   opacity: 0;
-  transition: left 0s linear, opacity 200ms linear;
+  transition: left 0s linear, opacity 400ms ease-out;
   z-index: 1;
   display: block;
   pointer-events: none;
@@ -94,7 +94,7 @@
 .page.active{
   left: 0;
   opacity: 1;
-  transition: left 200ms linear, opacity 300ms linear;
+  transition: left 400ms ease-out, opacity 400ms ease-out;
   z-index: 2;
   display: block;
 }

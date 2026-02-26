@@ -107,7 +107,7 @@ export default function Questionaire() {
         setTimeout(() => {
           setPreviousPagePos(null);
           setIsTransitioning(false);
-        }, 350);
+        }, 450);
       }
     }
     mixpanel.track(`[Page ${pageNo} View] Questionnaire`, { source: 'Questionnaire' });
@@ -158,7 +158,7 @@ export default function Questionaire() {
     setTimeout(() => {
       setPreviousPagePos(null);
       setIsTransitioning(false);
-    }, 350);
+    }, 450);
   }
   if (loadError) {
     return (
