@@ -84,9 +84,9 @@
   display: none;
 }
 .page.inactive{
-  left: -100%;
+  left: -500%;
   opacity: 0;
-  transition: left 200ms linear, opacity 200ms linear;
+  transition: left 0s linear, opacity 200ms linear;
   z-index: 1;
   display: block;
   pointer-events: none;
