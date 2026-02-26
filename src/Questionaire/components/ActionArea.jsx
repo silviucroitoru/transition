@@ -1,21 +1,20 @@
+import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 
 export default function ActionArea({currentPage, next, back, dataPointId, dataPointName, a, isAvailable, type, language}) {
-  const privacyLinkFunction = (content) => <a href="https://evrbloom.ro/policies/privacy-policy" target="_blank" rel="noopener noreferrer">{content}</a>;
   return (
     <div
       className={`action-area ${type === 'intro' ? 'width-disclaimer' : ''} ${currentPage.position === 1 ? 'justify-end' : 'justify-between'}`}>
       {
         type === 'intro' && (
           <div className="disclaimer">
-            {/*<T keyName="terms_agreement" components={{privacyLink: privacyLinkFunction}} />*/}
             <FormattedMessage
               id="terms_agreement"
               values={{
                 privacyPolicy: (
-                  <a href="https://evrbloom.ro/policies/privacy-policy" target="_blank">
+                  <Link to="/privacy-policy">
                     <FormattedMessage id="privacy_policy" />
-                  </a>
+                  </Link>
                 ),
               }}
             />

@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Dashboard from "./Dashboard/Dashboard.jsx"
 import mixpanel from 'mixpanel-browser';
 import Questionaire from "./Questionaire/Questionaire.jsx"
+import PrivacyPolicy from "./PrivacyPolicy/PrivacyPolicy.jsx"
 import './assets/base.css'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/questionnaire" replace />} />
         <Route path="/questionnaire" element={<Questionaire />} />
+        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/dashboard" element={<Dashboard />} />
         {/*<Route path="/login" element={<Login />} />*/}
         {/*<Route path="/dashboard" element={<ProtectedRoute element={Dashboard} />} />*/}
